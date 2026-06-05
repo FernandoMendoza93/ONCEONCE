@@ -17,3 +17,6 @@ crops/
 *.log
 .DS_Store
 Thumbs.db
+google_text.txt
+search_result.html
+resolve.py
