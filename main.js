@@ -8,14 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. INICIALIZACIÓN DE LENIS (Smooth Scroll)
     let lenis;
     try {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
         lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easing inercia suave
             direction: 'vertical',
             gestureDirection: 'vertical',
-            smooth: true,
+            smooth: !isMobile, // desactivado en móvil para usar scroll nativo físico que es perfecto
             mouseMultiplier: 1,
-            touchMultiplier: 1.5, // ligeramente superior para suavidad móvil
+            touchMultiplier: 0, // 0 evita interceptar eventos táctiles y congelar el scroll en móviles
             infinite: false,
         });
 
