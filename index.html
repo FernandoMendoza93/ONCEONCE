@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es" class="lenis">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Once:Once Pilates Studio - Un santuario de bienestar físico y mental. Clases exclusivas de Reformer, Barre y Mat Pilates en Oaxaca.">
+    <title>Once:Once Pilates Studio | Movimiento con Propósito</title>
+    
+    <!-- Google Fonts: Cinzel (Serif Premium) y Plus Jakarta Sans (Sans-Serif Geométrica) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <!-- HEADER PERSISTENTE (Logo ONCE:ONCE en la esquina superior izquierda) -->
+    <header class="main-header" id="main-header">
+        <div class="header-container">
+            <div class="header-logo">
+                <a href="#hero" class="logo-link" aria-label="Inicio Once:Once">
+                    <img src="assets/logo_gold.png" alt="Once:Once Pilates Studio Logo" class="header-logo-img">
+                </a>
+            </div>
+            
+            <nav class="header-nav">
+                <!-- Perfil (Táctil >= 44px) -->
+                <button class="nav-icon-btn" id="btn-profile" aria-label="Perfil de Usuario">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+                
+                <!-- Reservar Rápido -->
+                <button class="nav-cta-btn" id="btn-quick-book" aria-label="Reservar clase">
+                    RESERVAR
+                </button>
+                
+                <!-- WhatsApp Overlay Directo -->
+                <a href="https://wa.me/529515000509" target="_blank" class="nav-icon-btn whatsapp-btn" id="btn-whatsapp" aria-label="Contacto por WhatsApp">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                </a>
+                
+                <!-- Menú Burger -->
+                <button class="nav-icon-btn" id="btn-menu" aria-label="Menú de Navegación">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MENÚ LATERAL (Sleek Glassmorphic Overlay) -->
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="menu-panel">
+            <button class="close-menu-btn" id="btn-close-menu" aria-label="Cerrar menú">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="menu-links">
+                <a href="#hero" class="menu-link-item">Inicio</a>
+                <a href="#disciplinas" class="menu-link-item">Disciplinas</a>
+                <a href="#filosofia" class="menu-link-item">Santuario</a>
+                <a href="#paquetes" class="menu-link-item">Precios</a>
+                <a href="#merch" class="menu-link-item">Merchandise</a>
+                <a href="#contacto" class="menu-link-item">Contacto</a>
+            </div>
+            <div class="menu-footer">
+                <img src="assets/logo_gold.png" alt="Once:Once logo" class="menu-logo-img">
+                <p>Oaxaca de Juárez, México</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN SCROLLABLE CONTAINER -->
+    <main>
+        
+        <!-- HERO SECTION CINEMÁTICO (Optimizado para 100dvh con foto real de Reformer) -->
+        <section class="hero-section" id="hero">
+            <div class="hero-bg-container">
+                <!-- Imagen real del reformer optimizada con un overlay oscuro estético -->
+                <img src="assets/reformer.jpg" alt="Estudio Once:Once Pilates Reformer" class="hero-bg-img">
+                <div class="hero-overlay-dark"></div>
+            </div>
+            
+            <div class="hero-content">
+                <span class="hero-badge animate-fade-up">ONCE:ONCE PILATES STUDIO</span>
+                <h1 class="hero-title animate-fade-up">MOVIMIENTO<br><span class="highlight-serif">CON PROPÓSITO.</span></h1>
+                <p class="hero-subtitle animate-fade-up-delayed">Rituales conscientes. Equilibrio cinemático. Comienza tu viaje.</p>
+                <div class="hero-actions animate-fade-up-more">
+                    <button class="primary-cta-btn" id="btn-hero-cta">
+                        EXPERIMENTAR EL ESTUDIO
+                        <svg class="cta-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Indicador visual de zona segura del WebView -->
+            <div class="safe-area-indicator">
+                <span class="safe-dot"></span>
+                <span class="safe-label">Explorar Ritual</span>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE DISCIPLINAS (Recortes reales: Barre, Reformer, Mat) -->
+        <section class="disciplines-section" id="disciplinas">
+            <div class="section-container">
+                <div class="section-header scroll-reveal">
+                    <span class="section-tag">EL ARTE DE ENTRENAR</span>
+                    <h2 class="section-title">NUESTRAS DISCIPLINAS</h2>
+                    <p class="section-description">Diseñadas meticulosamente para esculpir tu musculatura, realinear la columna y fomentar la conexión mente-cuerpo.</p>
+                </div>
+
+                <div class="disciplines-grid">
+                    
+                    <!-- Disciplina 1: REFORMER -->
+                    <div class="discipline-card scroll-reveal">
+                        <div class="discipline-img-wrapper">
+                            <img src="assets/reformer.jpg" alt="Pilates Reformer en Once:Once" class="discipline-img">
+                            <div class="discipline-overlay"></div>
+                            <div class="discipline-badge">Popular</div>
+                        </div>
+                        <div class="discipline-info">
+                            <h3 class="discipline-name">Reformer</h3>
+                            <p class="discipline-tagline">Relax for a moment</p>
+                            <p class="discipline-text">Tonifica, fortalece y alarga tus músculos con pilates reformer. Resultados que se sienten y se notan en cada sesión.</p>
+                            <button class="discipline-cta-btn open-booking-btn">Agendar Clase</button>
+                        </div>
+                    </div>
+
+                    <!-- Disciplina 2: BARRE -->
+                    <div class="discipline-card scroll-reveal">
+                        <div class="discipline-img-wrapper">
+                            <img src="assets/barre.jpg" alt="Clase de Barre en Once:Once" class="discipline-img">
+                            <div class="discipline-overlay"></div>
+                        </div>
+                        <div class="discipline-info">
+                            <h3 class="discipline-name">Barre</h3>
+                            <p class="discipline-tagline">Relax for a moment</p>
+                            <p class="discipline-text">Combina ballet, pilates y yoga, enfocada en tonificar, quemar grasa localizada y mejorar significativamente la postura corporal.</p>
+                            <button class="discipline-cta-btn open-booking-btn">Agendar Clase</button>
+                        </div>
+                    </div>
+
+                    <!-- Disciplina 3: MAT -->
+                    <div class="discipline-card scroll-reveal">
+                        <div class="discipline-img-wrapper">
+                            <img src="assets/mat.jpg" alt="Mat Pilates en Once:Once" class="discipline-img">
+                            <div class="discipline-overlay"></div>
+                        </div>
+                        <div class="discipline-info">
+                            <h3 class="discipline-name">Mat Pilates</h3>
+                            <p class="discipline-tagline">Conéctate contigo</p>
+                            <p class="discipline-text">Trabajo de control corporal clásico sobre colchoneta, desafiando la gravedad usando la fuerza intrínseca de tu propio core.</p>
+                            <button class="discipline-cta-btn open-booking-btn">Agendar Clase</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- FILOSOFÍA Y BENEFICIOS (Intersection Observer native CSS effects) -->
+        <section class="philosophy-section" id="filosofia">
+            <div class="section-container">
+                <div class="section-header scroll-reveal">
+                    <span class="section-tag">EL ESTUDIO</span>
+                    <h2 class="section-title">EL SANTUARIO DE BIENESTAR</h2>
+                    <p class="section-description">Diseñamos una experiencia holística premium que cuida hasta el mínimo detalle durante tu estancia en Once:Once.</p>
+                </div>
+
+                <div class="philosophy-grid">
+                    <!-- Tarjeta de Beneficio 1 (Pet Friendly) -->
+                    <div class="benefit-card scroll-reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path>
+                                <path d="M19 10v1a7 7 0 0 1-14 0v-1"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </div>
+                        <h3 class="benefit-title">Pet Friendly</h3>
+                        <p class="benefit-text">Un santuario inclusivo. Comparte la experiencia y la serenidad junto a tus acompañantes de cuatro patas.</p>
+                    </div>
+
+                    <!-- Tarjeta de Beneficio 2 (Espacio Premium) -->
+                    <div class="benefit-card scroll-reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                        </div>
+                        <h3 class="benefit-title">Arquitectura Orgánica</h3>
+                        <p class="benefit-text">Muros de piedra texturizada, plantas naturales y una iluminación cálida pensada para calmar el sistema nervioso central.</p>
+                    </div>
+
+                    <!-- Tarjeta de Beneficio 3 (Bebidas y Té) -->
+                    <div class="benefit-card scroll-reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                <line x1="6" y1="1" x2="6" y2="4"></line>
+                                <line x1="10" y1="1" x2="10" y2="4"></line>
+                                <line x1="14" y1="1" x2="14" y2="4"></line>
+                            </svg>
+                        </div>
+                        <h3 class="benefit-title">Ritual de Té & Café</h3>
+                        <p class="benefit-text">Barra de hidratación premium con infusiones herbales orgánicas y café artesanal a tu disposición.</p>
+                    </div>
+
+                    <!-- Tarjeta de Beneficio 4 (Lockers y Privacidad) -->
+                    <div class="benefit-card scroll-reveal">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="benefit-title">Privacidad & Confort</h3>
+                        <p class="benefit-text">Vestidores y lockers de seguridad de diseño minimalista con chapa electrónica integrada.</p>
+                    </div>
+                </div>
+
+                <!-- Detalle Visual de Pilates Reformer (Usando foto real de Mat) -->
+                <div class="studio-detail-block scroll-reveal">
+                    <div class="studio-image-wrapper">
+                        <img src="assets/mat.jpg" alt="Clase de Pilates Mat en Once:Once" class="studio-img">
+                    </div>
+                    <div class="studio-text-card glass-panel">
+                        <span class="card-tag">RITUAL</span>
+                        <h3 class="card-title">SÉ EL EQUILIBRIO</h3>
+                        <p class="card-text">Once:Once es un espacio pensado para romper con la inercia diaria. Un templo para redescubrir la alineación natural de tu cuerpo a través de rituales conscientes guiados por los coaches más calificados del país.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAQUETES (Tarjetas Glassmorphic de Contraste Alto) -->
+        <section class="packages-section" id="paquetes">
+            <div class="section-container">
+                <div class="section-header scroll-reveal">
+                    <span class="section-tag">MEMBRESÍAS</span>
+                    <h2 class="section-title">CONOCE NUESTROS PRECIOS</h2>
+                    <p class="section-description">Elige la modalidad que mejor resuene con tu ritmo de vida y metas de entrenamiento.</p>
+                </div>
+
+                <div class="packages-grid">
+                    <!-- Paquete 1: Promo 15 Sesiones (Deep Sapphire) -->
+                    <div class="package-card sapphire-card scroll-reveal">
+                        <div class="card-glow"></div>
+                        <div class="package-header">
+                            <span class="package-badge">POPULAR</span>
+                            <h3 class="package-name">15 Sesiones</h3>
+                            <div class="package-price">
+                                <span class="price-currency">$</span>
+                                <span class="price-amount">1,350</span>
+                                <span class="price-period">/ mes</span>
+                            </div>
+                        </div>
+                        <ul class="package-features">
+                            <li>
+                                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                15 Clases a elegir (Reformer/Barre/Mat)
+                            </li>
+                            <li>
+                                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Vigencia de 30 días
+                            </li>
+                            <li>
+                                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Reserva prioritaria de horarios
+                            </li>
+                            <li>
+                                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Acceso libre a infusiones y lockers
+                            </li>
+                        </ul>
+                        <div class="package-action">
+                            <button class="package-btn btn-sapphire" data-package="15-sesiones">AGENDAR SESIÓN</button>
+                        </div>
+                    </div>
+
+                    <!-- Paquete 2: Membresía Ilimitada (Deep Emerald) -->
+                    <div class="package-card emerald-card scroll-reveal">
+                        <div class="card-glow"></div>
+                        <div class="package-header">
+                            <span class="package-badge">VIP</span>
+                            <h3 class="package-name">Membresía Ilimitada</h3>
+                            <div class="package-price">
+                                <span class="price-currency">$</span>
+                                <span class="price-amount">2,300</span>
+                                <span class="price-period">/ mes</span>
+                            </div>
+                        </div>
+                        <ul class="package-features">
+                            <li>
+                                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Clases ilimitadas al mes
+                            </li>
+                            <li>
+                                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Cancelación flexible hasta 4 horas antes
+                            </li>
+                            <li>
+                                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Booking automático semanal
+                            </li>
+                            <li>
+                                <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                10% de descuento en Colección Merch
+                            </li>
+                        </ul>
+                        <div class="package-action">
+                            <button class="package-btn btn-emerald" data-package="ilimitada">ADQUIRIR MEMBRESÍA</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLECCIÓN MERCH (Carrusel Horizontal con Fotos optimizadas) -->
+        <section class="merch-section" id="merch">
+            <div class="section-container">
+                <div class="section-header scroll-reveal">
+                    <span class="section-tag">ESTILO DE VIDA</span>
+                    <h2 class="section-title">COLECCIÓN OFICIAL</h2>
+                    <p class="section-description">Lleva la armonía y el estilo de Once:Once fuera del estudio con nuestra indumentaria diseñada para el confort absoluto.</p>
+                </div>
+
+                <div class="merch-carousel-wrapper scroll-reveal">
+                    <div class="merch-carousel" id="merch-carousel">
+                        
+                        <!-- Producto 1: Sudadera -->
+                        <div class="merch-card" data-product="sudadera">
+                            <div class="merch-image-container">
+                                <img src="https://res.cloudinary.com/demo/image/fetch/f_auto,q_auto,w_800/https://images.unsplash.com/photo-1620799140408-edc6dcb6d633" alt="Sudadera Oficial Once:Once en Algodón Orgánico" class="merch-img">
+                                <div class="merch-tag-badge">Nuevo</div>
+                            </div>
+                            <div class="merch-details">
+                                <h3 class="product-title">Sudadera Once:Once</h3>
+                                <p class="product-desc">Algodón ultra-suave peinado, corte minimalista oversize unisex.</p>
+                                <div class="product-meta">
+                                    <span class="product-price">$980</span>
+                                    <button class="buy-cta-btn" aria-label="Comprar sudadera">
+                                        COMPRAR
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Producto 2: Calcetas Grip -->
+                        <div class="merch-card" data-product="calcetas">
+                            <div class="merch-image-container">
+                                <img src="https://res.cloudinary.com/demo/image/fetch/f_auto,q_auto,w_800/https://images.unsplash.com/photo-1588117261148-ac7338ef50b5" alt="Calcetas Antideslizantes Grip Once:Once" class="merch-img">
+                                <div class="merch-tag-badge">Esencial</div>
+                            </div>
+                            <div class="merch-details">
+                                <h3 class="product-title">Medias Antideslizantes</h3>
+                                <p class="product-desc">Grip de silicona orgánica reforzado, ideal para máxima adherencia al reformer.</p>
+                                <div class="product-meta">
+                                    <span class="product-price">$280</span>
+                                    <button class="buy-cta-btn" aria-label="Comprar calcetas antideslizantes">
+                                        COMPRAR
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Controles del carrusel para desktop -->
+                    <div class="carousel-indicators">
+                        <span class="indicator active" data-slide="0"></span>
+                        <span class="indicator" data-slide="1"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACTO & FOOTER (Integración Inmersiva con Contraste Elevado) -->
+        <section class="contact-section" id="contacto">
+            <div class="section-container">
+                <div class="contact-grid scroll-reveal">
+                    
+                    <!-- Información de Contacto -->
+                    <div class="contact-info">
+                        <span class="section-tag">CONTACTO</span>
+                        <h2 class="contact-title highlight-serif">CONECTA CON NOSOTROS</h2>
+                        <p class="contact-intro">Estamos ubicados en el corazón de Oaxaca. Escríbenos para agendar un recorrido privado o aclarar tus dudas.</p>
+                        
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                </div>
+                                <div class="contact-text">
+                                    <h4>Ubicación</h4>
+                                    <p>Dalias 300, Colonia Reforma, CP 68050, Oaxaca de Juárez, Oaxaca.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                </div>
+                                <div class="contact-text">
+                                    <h4>Línea Directa / WhatsApp</h4>
+                                    <p><a href="tel:529515000509" class="contact-link">+52 951 500 0509</a></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enlaces Sociales Minimalistas -->
+                        <div class="social-links">
+                            <a href="https://instagram.com/onceonce.pilates" target="_blank" class="social-icon-btn" aria-label="Instagram">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                            </a>
+                            <a href="https://facebook.com" target="_blank" class="social-icon-btn" aria-label="Facebook">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                            </a>
+                            <a href="https://tiktok.com" target="_blank" class="social-icon-btn" aria-label="TikTok">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12a4 4 0 1 0 4 4V4h5v4h-3v8a4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4z"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Mapa de Ubicación Estilizado (Fondo Oscuro) -->
+                    <div class="contact-map glass-panel">
+                        <div class="map-placeholder">
+                            <div class="map-circle-glow"></div>
+                            <svg class="map-marker" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#C5A880" stroke-width="1.5">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3" fill="#C5A880"></circle>
+                            </svg>
+                            <span class="map-label">ONCE:ONCE OAXACA</span>
+                            <a href="https://maps.google.com/?q=Dalias+300,+Colonia+Reforma,+Oaxaca" target="_blank" class="map-btn">
+                                ABRIR EN MAPAS
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="main-footer">
+            <div class="footer-container">
+                <p class="footer-copyright">&copy; 2026 ONCE:ONCE PILATES STUDIO. Todos los derechos reservados.</p>
+                <div class="footer-legal">
+                    <a href="#aviso">Aviso de Privacidad</a>
+                    <span>•</span>
+                    <a href="#terminos">Términos y Condiciones</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- MODAL DE RESERVA / BOOKING (Con contención de scroll) -->
+    <div class="modal-wrapper" id="booking-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-container" data-lenis-prevent>
+            <div class="modal-header">
+                <div>
+                    <span class="modal-tag">AGENDA TU EXPERIENCIA</span>
+                    <h2 class="modal-title">PILATES SCHEDULE</h2>
+                </div>
+                <button class="close-modal-btn" id="btn-close-booking" aria-label="Cerrar calendario">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Selector de Semana -->
+                <div class="week-selector">
+                    <div class="week-days">
+                        <button class="week-day-btn" data-day="Mon">
+                            <span class="day-name">LUN</span>
+                            <span class="day-num">08</span>
+                        </button>
+                        <button class="week-day-btn active" data-day="Tue">
+                            <span class="day-name">MAR</span>
+                            <span class="day-num">09</span>
+                        </button>
+                        <button class="week-day-btn" data-day="Wed">
+                            <span class="day-name">MIÉ</span>
+                            <span class="day-num">10</span>
+                        </button>
+                        <button class="week-day-btn" data-day="Thu">
+                            <span class="day-name">JUE</span>
+                            <span class="day-num">11</span>
+                        </button>
+                        <button class="week-day-btn" data-day="Fri">
+                            <span class="day-name">VIE</span>
+                            <span class="day-num">12</span>
+                        </button>
+                        <button class="week-day-btn" data-day="Sat">
+                            <span class="day-name">SÁB</span>
+                            <span class="day-num">13</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lista de Sesiones Disponibles -->
+                <div class="sessions-list">
+                    
+                    <!-- Sesión 1 -->
+                    <div class="session-slot glass-panel">
+                        <div class="slot-time">
+                            <span class="time-hour">07:00</span>
+                            <span class="time-ampm">AM</span>
+                        </div>
+                        <div class="slot-info">
+                            <h4 class="class-name">Pilates Reformer</h4>
+                            <p class="instructor-name">Coach: Elena Ruíz</p>
+                            <span class="availability-badge available">Cupo: 4 / 7</span>
+                        </div>
+                        <div class="slot-action">
+                            <button class="action-btn-agendar" data-slot-id="1">AGENDAR</button>
+                        </div>
+                    </div>
+
+                    <!-- Sesión 2 -->
+                    <div class="session-slot glass-panel">
+                        <div class="slot-time">
+                            <span class="time-hour">08:15</span>
+                            <span class="time-ampm">AM</span>
+                        </div>
+                        <div class="slot-info">
+                            <h4 class="class-name">Barre Core</h4>
+                            <p class="instructor-name">Coach: Sofía Castro</p>
+                            <span class="availability-badge warning">Últimos 2 lugares (5/7)</span>
+                        </div>
+                        <div class="slot-action">
+                            <button class="action-btn-agendar" data-slot-id="2">AGENDAR</button>
+                        </div>
+                    </div>
+
+                    <!-- Sesión 3 -->
+                    <div class="session-slot glass-panel">
+                        <div class="slot-time">
+                            <span class="time-hour">09:30</span>
+                            <span class="time-ampm">AM</span>
+                        </div>
+                        <div class="slot-info">
+                            <h4 class="class-name">Mat Pilates Flex</h4>
+                            <p class="instructor-name">Coach: Elena Ruíz</p>
+                            <span class="availability-badge available">Cupo: 3 / 7</span>
+                        </div>
+                        <div class="slot-action">
+                            <button class="action-btn-agendar" data-slot-id="3">AGENDAR</button>
+                        </div>
+                    </div>
+
+                    <!-- Sesión 4 -->
+                    <div class="session-slot glass-panel full-slot">
+                        <div class="slot-time">
+                            <span class="time-hour">06:00</span>
+                            <span class="time-ampm">PM</span>
+                        </div>
+                        <div class="slot-info">
+                            <h4 class="class-name">Reformer Avanzado</h4>
+                            <p class="instructor-name">Coach: David López</p>
+                            <span class="availability-badge full">Clase Llena (7/7)</span>
+                        </div>
+                        <div class="slot-action">
+                            <button class="action-btn-agendar disabled" disabled>LLENO</button>
+                        </div>
+                    </div>
+
+                    <!-- Sesión 5 -->
+                    <div class="session-slot glass-panel">
+                        <div class="slot-time">
+                            <span class="time-hour">07:15</span>
+                            <span class="time-ampm">PM</span>
+                        </div>
+                        <div class="slot-info">
+                            <h4 class="class-name">Barre Tonificación</h4>
+                            <p class="instructor-name">Coach: David López</p>
+                            <span class="availability-badge available">Cupo: 2 / 7</span>
+                        </div>
+                        <div class="slot-action">
+                            <button class="action-btn-agendar" data-slot-id="5">AGENDAR</button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE COMPRA MERCH -->
+    <div class="modal-wrapper" id="merch-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-container" data-lenis-prevent>
+            <div class="modal-header">
+                <div>
+                    <span class="modal-tag" id="merch-modal-tag">DETALLES DE PRODUCTO</span>
+                    <h2 class="modal-title" id="merch-modal-title">SUDADERA OFICIAL</h2>
+                </div>
+                <button class="close-modal-btn" id="btn-close-merch" aria-label="Cerrar ventana">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body merch-modal-body">
+                <div class="merch-modal-gallery">
+                    <img src="" alt="" class="merch-modal-img" id="merch-modal-img">
+                </div>
+                
+                <div class="merch-modal-info">
+                    <h3 class="modal-product-price" id="merch-modal-price">$980</h3>
+                    <p class="modal-product-desc" id="merch-modal-desc">
+                        Nuestra indumentaria representa la simplicidad y el balance. Algodón de gramaje pesado hilado y teñido éticamente.
+                    </p>
+                    
+                    <div class="merch-options">
+                        <div class="option-title">Talla</div>
+                        <div class="talla-selector">
+                            <button class="talla-btn active">S</button>
+                            <button class="talla-btn">M</button>
+                            <button class="talla-btn">L</button>
+                            <button class="talla-btn">XL</button>
+                        </div>
+                    </div>
+
+                    <div class="merch-checkout-action">
+                        <button class="checkout-btn" id="btn-checkout-submit">
+                            COMPLETAR ADQUISICIÓN
+                        </button>
+                        <p class="checkout-hint">La entrega de la mercancía se realiza de manera física en la recepción del estudio para asegurar el talle perfecto.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICACIÓN DE ÉXITO (Toast ultra-veloz de GPU) -->
+    <div class="toast-notification" id="toast-notification">
+        <div class="toast-content">
+            <svg class="toast-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#C5A880" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <div class="toast-text">
+                <h4 id="toast-title">Éxito</h4>
+                <p id="toast-msg">Clase agendada correctamente.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIBRERÍAS EXTERNAS (Lenis Smooth Scroll) -->
+    <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

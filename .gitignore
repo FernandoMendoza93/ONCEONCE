@@ -1,0 +1,19 @@
+# Scripts temporales de procesamiento local
+crop_collage.py
+split_collage_v2.py
+find_blocks.py
+process_assets.py
+
+# Imágenes raw / temporales
+collage.jpg
+assets/*_raw.jpg
+assets/img*.jpg
+crops/
+/assets/crop_*.jpg
+/assets/grid_*.jpg
+/assets/center.jpg
+
+# Archivos de sistema y logs
+*.log
+.DS_Store
+Thumbs.db
