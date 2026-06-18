@@ -143,9 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const openModal = (modalEl) => {
         modalEl.classList.add('active');
         if (lenis) lenis.stop(); // Pausa scroll de fondo para optimizar WebView
-        
-        // Foco de accesibilidad
         modalEl.setAttribute('aria-hidden', 'false');
+        
+        if (modalEl === bookingModal && typeof renderSessions === 'function') {
+            renderSessions();
+        }
     };
 
     const closeModal = (modalEl) => {
@@ -257,12 +259,13 @@ document.addEventListener('DOMContentLoaded', () => {
             dayButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            // Simular recarga de agenda con sutil efecto visual
+            // Recarga agenda con efecto visual
             const list = document.querySelector('.sessions-list');
             list.style.opacity = '0.3';
             list.style.transform = 'translate3d(0, 5px, 0)';
             
             setTimeout(() => {
+                renderSessions();
                 list.style.opacity = '1';
                 list.style.transform = 'translate3d(0, 0, 0)';
             }, 300);
@@ -289,31 +292,172 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3500);
     };
 
-    // Acciones dentro de los modales (Agendar y Comprar)
-    const scheduleButtons = document.querySelectorAll('.action-btn-agendar:not(.disabled)');
-    scheduleButtons.forEach(btn => {
+    // Datos reales de horarios de Reformer y Tapetes
+    const scheduleData = {
+        reformer: {
+            Mon: [
+                { time: "05:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" },
+                { time: "06:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 3 / 7" },
+                { time: "07:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 5 / 7" }
+            ],
+            Tue: [
+                { time: "07:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 2 / 7" },
+                { time: "08:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" },
+                { time: "09:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 6 / 7" }
+            ],
+            Wed: [
+                { time: "04:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 3 / 7" },
+                { time: "05:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 5 / 7" }
+            ],
+            Thu: [
+                { time: "04:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" },
+                { time: "05:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 2 / 7" }
+            ],
+            Fri: [
+                { time: "07:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" },
+                { time: "08:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 3 / 7" },
+                { time: "09:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 5 / 7" },
+                { time: "04:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 6 / 7" }
+            ],
+            Sat: [
+                { time: "07:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 5 / 7" },
+                { time: "08:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 3 / 7" },
+                { time: "09:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" }
+            ]
+        },
+        tapetes: {
+            Mon: [
+                { time: "06:30 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 5 / 10" },
+                { time: "08:00 AM", name: "Mat", instructor: "Renata", available: "Cupo: 6 / 10" },
+                { time: "09:30 AM", name: "GAP", instructor: "Nane", available: "Cupo: 4 / 10" },
+                { time: "11:00 AM", name: "Barre", instructor: "Staff", available: "Cupo: 7 / 10" }
+            ],
+            Tue: [
+                { time: "06:30 AM", name: "Mat", instructor: "Renata", available: "Cupo: 4 / 10" },
+                { time: "08:00 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 5 / 10" },
+                { time: "09:30 AM", name: "Barre", instructor: "Staff", available: "Cupo: 6 / 10" },
+                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 5 / 10" }
+            ],
+            Wed: [
+                { time: "06:30 AM", name: "Barre", instructor: "Staff", available: "Cupo: 5 / 10" },
+                { time: "08:00 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 4 / 10" },
+                { time: "09:30 AM", name: "Mat", instructor: "Renata", available: "Cupo: 6 / 10" },
+                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 3 / 10" }
+            ],
+            Thu: [
+                { time: "06:30 AM", name: "Mat", instructor: "Renata", available: "Cupo: 6 / 10" },
+                { time: "08:00 AM", name: "Barre", instructor: "Staff", available: "Cupo: 4 / 10" },
+                { time: "09:30 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 5 / 10" },
+                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 5 / 10" }
+            ],
+            Fri: [
+                { time: "06:30 AM", name: "Barre", instructor: "Staff", available: "Cupo: 4 / 10" },
+                { time: "08:00 AM", name: "Mat", instructor: "Renata", available: "Cupo: 6 / 10" },
+                { time: "09:30 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 5 / 10" },
+                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 7 / 10" }
+            ],
+            Sat: [
+                { time: "08:00 AM", name: "Mat", instructor: "Renata", available: "Cupo: 5 / 10" },
+                { time: "09:30 AM", name: "Barre", instructor: "Staff", available: "Cupo: 4 / 10" },
+                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 6 / 10" }
+            ]
+        }
+    };
+
+    // Renderizado dinámico de la agenda
+    const renderSessions = () => {
+        const activeTabEl = document.querySelector('.booking-tab-btn.active');
+        const activeDayEl = document.querySelector('.week-day-btn.active');
+        const listContainer = document.querySelector('.sessions-list');
+        
+        if (!activeTabEl || !activeDayEl || !listContainer) return;
+        
+        const activeTab = activeTabEl.getAttribute('data-booking-tab');
+        const activeDay = activeDayEl.getAttribute('data-day');
+        
+        listContainer.innerHTML = '';
+        const sessions = scheduleData[activeTab][activeDay] || [];
+        
+        if (sessions.length === 0) {
+            listContainer.innerHTML = '<p class="no-sessions">No hay clases programadas para este día.</p>';
+            return;
+        }
+        
+        sessions.forEach(session => {
+            const timeParts = session.time.split(' ');
+            const hour = timeParts[0];
+            const ampm = timeParts[1];
+            
+            const slot = document.createElement('div');
+            slot.className = 'session-slot glass-panel';
+            slot.innerHTML = `
+                <div class="slot-time">
+                    <span class="time-hour">${hour}</span>
+                    <span class="time-ampm">${ampm}</span>
+                </div>
+                <div class="slot-info">
+                    <h4 class="class-name">${session.name}</h4>
+                    <p class="instructor-name">Coach: ${session.instructor}</p>
+                    <span class="availability-badge available">${session.available}</span>
+                </div>
+                <div class="slot-action">
+                    <button class="action-btn-agendar">AGENDAR</button>
+                </div>
+            `;
+            
+            // Añadir listener de WhatsApp al botón dinámico
+            slot.querySelector('.action-btn-agendar').addEventListener('click', (e) => {
+                const btn = e.target;
+                const text = `¡Hola! Me interesa agendar la clase de "${session.name}" con ${session.instructor} el día ${getSpanishDay(activeDay)} a las ${session.time}. ¿Tienen disponibilidad?`;
+                
+                btn.innerText = 'PROCESANDO...';
+                btn.style.opacity = '0.7';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    sendWhatsAppMessage(text);
+                    closeModal(bookingModal);
+                    
+                    // Restablecer botón
+                    btn.innerText = 'AGENDAR';
+                    btn.style.opacity = '1';
+                    btn.disabled = false;
+                }, 800);
+            });
+            
+            listContainer.appendChild(slot);
+        });
+    };
+
+    const getSpanishDay = (day) => {
+        const days = {
+            Mon: "Lunes",
+            Tue: "Martes",
+            Wed: "Miércoles",
+            Thu: "Jueves",
+            Fri: "Viernes",
+            Sat: "Sábado"
+        };
+        return days[day] || day;
+    };
+
+    // Listeners de pestañas del booking modal
+    const bookingTabButtons = document.querySelectorAll('.booking-tab-btn');
+    bookingTabButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            const slot = btn.closest('.session-slot');
-            const className = slot.querySelector('.class-name').innerText;
-            const coach = slot.querySelector('.instructor-name').innerText.replace('Coach: ', '');
-            const hour = slot.querySelector('.time-hour').innerText + ' ' + slot.querySelector('.time-ampm').innerText;
-            const day = document.querySelector('.week-day-btn.active .day-name').innerText;
+            bookingTabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             
-            const text = `¡Hola! Me interesa agendar la clase de "${className}" con ${coach} el día ${day} a las ${hour}. ¿Tienen disponibilidad?`;
-            
-            btn.innerText = 'PROCESANDO...';
-            btn.style.opacity = '0.7';
-            btn.disabled = true;
+            // Recarga agenda con efecto visual
+            const list = document.querySelector('.sessions-list');
+            list.style.opacity = '0.3';
+            list.style.transform = 'translate3d(0, 5px, 0)';
             
             setTimeout(() => {
-                sendWhatsAppMessage(text);
-                closeModal(bookingModal);
-                
-                // Restablecer botón
-                btn.innerText = 'AGENDAR';
-                btn.style.opacity = '1';
-                btn.disabled = false;
-            }, 800);
+                renderSessions();
+                list.style.opacity = '1';
+                list.style.transform = 'translate3d(0, 0, 0)';
+            }, 300);
         });
     });
 

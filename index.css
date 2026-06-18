@@ -1501,6 +1501,39 @@ html.lenis, html.lenis body {
     }
 }
 
+/* Pestañas de Reserva (Reformer / Tapetes) */
+.booking-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.booking-tab-btn {
+    font-family: var(--font-title);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    background-color: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--color-text-muted);
+    padding: 0.6rem 1.8rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.booking-tab-btn:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+.booking-tab-btn.active {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-bg-base);
+}
+
 /* 12. RESERVAS / WEEKLY CALENDAR GRID */
 .week-selector {
     margin-bottom: 2rem;
