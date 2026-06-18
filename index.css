@@ -770,6 +770,39 @@ html.lenis, html.lenis body {
     position: relative;
 }
 
+/* Pestañas de Paquetes */
+.packages-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3.5rem;
+}
+
+.packages-tabs .tab-btn {
+    font-family: var(--font-title);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    background-color: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--color-text-muted);
+    padding: 0.8rem 2.2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.packages-tabs .tab-btn:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+.packages-tabs .tab-btn.active {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-bg-base);
+}
+
 .packages-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -778,9 +811,20 @@ html.lenis, html.lenis body {
     margin: 0 auto;
 }
 
+.packages-grid.hidden {
+    display: none !important;
+}
+
 @media(min-width: 768px) {
     .packages-grid {
         grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media(min-width: 1200px) {
+    .packages-grid {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        max-width: 1200px;
     }
 }
 
@@ -884,6 +928,14 @@ html.lenis, html.lenis body {
 .price-period {
     font-size: 0.85rem;
     color: var(--color-text-muted);
+}
+
+.price-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    opacity: 0.8;
+    margin-top: 0.25rem;
+    display: block;
 }
 
 .package-features {

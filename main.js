@@ -119,7 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCloseBooking = document.getElementById('btn-close-booking');
     const btnCloseMerch = document.getElementById('btn-close-merch');
     
-    const packageButtons = document.querySelectorAll('.package-btn, .open-booking-btn');
+    const packageButtons = document.querySelectorAll('.package-btn');
+    const openBookingButtons = document.querySelectorAll('.open-booking-btn');
     const merchCards = document.querySelectorAll('.merch-card');
 
     // Datos estáticos de merchandising para inyectar en el modal
@@ -160,7 +161,45 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCloseBooking.addEventListener('click', () => closeModal(bookingModal));
     bookingModal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(bookingModal));
 
+    // Selector de pestañas de paquetes
+    const tabButtons = document.querySelectorAll('.packages-tabs .tab-btn');
+    const tabGrids = document.querySelectorAll('.packages-grid');
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const targetTab = btn.getAttribute('data-tab');
+            tabGrids.forEach(grid => {
+                if (grid.getAttribute('data-tab-content') === targetTab) {
+                    grid.classList.remove('hidden');
+                } else {
+                    grid.classList.add('hidden');
+                }
+            });
+        });
+    });
+
+    // Enlace de compra directa de paquete vía WhatsApp
+    const sendWhatsAppMessage = (text) => {
+        const phone = "529513506047";
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+    };
+
     packageButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const category = btn.getAttribute('data-package-category');
+            const name = btn.getAttribute('data-package-name');
+            const price = btn.getAttribute('data-package-price');
+            const text = `¡Hola! Me gustaría adquirir el paquete de ${category}: "${name}" por $${price}. ¿Cómo puedo realizar el pago?`;
+            sendWhatsAppMessage(text);
+        });
+    });
+
+    // Botones de las disciplinas que abren la agenda
+    openBookingButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             openModal(bookingModal);
         });
@@ -256,52 +295,49 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             const slot = btn.closest('.session-slot');
             const className = slot.querySelector('.class-name').innerText;
+            const coach = slot.querySelector('.instructor-name').innerText.replace('Coach: ', '');
             const hour = slot.querySelector('.time-hour').innerText + ' ' + slot.querySelector('.time-ampm').innerText;
+            const day = document.querySelector('.week-day-btn.active .day-name').innerText;
             
-            // Simulación de carga
+            const text = `¡Hola! Me interesa agendar la clase de "${className}" con ${coach} el día ${day} a las ${hour}. ¿Tienen disponibilidad?`;
+            
             btn.innerText = 'PROCESANDO...';
             btn.style.opacity = '0.7';
             btn.disabled = true;
             
             setTimeout(() => {
-                btn.innerText = 'AGENDADO';
-                btn.style.opacity = '0.5';
-                
+                sendWhatsAppMessage(text);
                 closeModal(bookingModal);
-                showToast('¡Reserva Exitosa!', `Tu clase de ${className} para las ${hour} ha sido registrada.`);
                 
-                // Restablecer botón después del modal cerrado
-                setTimeout(() => {
-                    btn.innerText = 'AGENDAR';
-                    btn.style.opacity = '1';
-                    btn.disabled = false;
-                }, 1000);
-            }, 1200);
+                // Restablecer botón
+                btn.innerText = 'AGENDAR';
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            }, 800);
         });
     });
 
     const btnCheckoutSubmit = document.getElementById('btn-checkout-submit');
     btnCheckoutSubmit.addEventListener('click', () => {
         const prodTitle = document.getElementById('merch-modal-title').innerText;
+        const price = document.getElementById('merch-modal-price').innerText;
         const activeTalla = document.querySelector('.talla-btn.active')?.innerText || 'S';
         
-        btnCheckoutSubmit.innerText = 'ADQUIRIENDO...';
+        const text = `¡Hola! Me interesa adquirir el producto: "${prodTitle}" en talla ${activeTalla} (Precio: ${price}). ¿Tienen disponibilidad en stock?`;
+        
+        btnCheckoutSubmit.innerText = 'PROCESANDO...';
         btnCheckoutSubmit.style.opacity = '0.7';
         btnCheckoutSubmit.disabled = true;
         
         setTimeout(() => {
-            btnCheckoutSubmit.innerText = 'COMPLETADO';
-            btnCheckoutSubmit.style.opacity = '0.5';
-            
+            sendWhatsAppMessage(text);
             closeModal(merchModal);
-            showToast('Adquisición Registrada', `Apartamos tu ${prodTitle} (Talla: ${activeTalla}). Te espera en recepción.`);
             
-            setTimeout(() => {
-                btnCheckoutSubmit.innerText = 'COMPLETAR ADQUISICIÓN';
-                btnCheckoutSubmit.style.opacity = '1';
-                btnCheckoutSubmit.disabled = false;
-            }, 1000);
-        }, 1200);
+            // Restablecer botón
+            btnCheckoutSubmit.innerText = 'COMPLETAR ADQUISICIÓN';
+            btnCheckoutSubmit.style.opacity = '1';
+            btnCheckoutSubmit.disabled = false;
+        }, 800);
     });
 
     // 7. GESTOS TÁCTILES CARRUSEL DE MERCH (Swipe / Drag)
