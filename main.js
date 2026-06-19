@@ -515,6 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .select(`
                 id,
                 estatus_pago,
+                fecha,
                 clases (
                     dia_semana,
                     hora_inicio,
@@ -544,14 +545,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const className = clase.disciplinas?.nombre || 'Clase';
             const coachName = clase.coaches?.nombre || 'Ani';
             const formattedTime = formatTime12h(clase.hora_inicio);
-            const day = getSpanishDay(clase.dia_semana);
+            const dateLabel = booking.fecha ? formatDateSpanish(booking.fecha) : getSpanishDay(clase.dia_semana);
             
             const statusClass = booking.estatus_pago === 'Confirmado 50%' ? 'confirmed' : 'pending';
             const statusLabel = booking.estatus_pago || 'Pendiente';
             
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td><strong>${className}</strong><br><small>${day} - ${formattedTime}</small></td>
+                <td><strong>${className}</strong><br><small>${dateLabel} - ${formattedTime}</small></td>
                 <td>${coachName}</td>
                 <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
             `;
@@ -567,6 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .select(`
                 id,
                 estatus_pago,
+                fecha,
                 clientes (
                     nombre,
                     telefono
@@ -600,7 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const className = clase.disciplinas?.nombre || 'Clase';
             const coachName = clase.coaches?.nombre || 'Ani';
             const formattedTime = formatTime12h(clase.hora_inicio);
-            const day = getSpanishDay(clase.dia_semana);
+            const dateLabel = booking.fecha ? formatDateSpanish(booking.fecha) : getSpanishDay(clase.dia_semana);
             
             const statusClass = booking.estatus_pago === 'Confirmado 50%' ? 'confirmed' : 'pending';
             const statusLabel = booking.estatus_pago || 'Pendiente';
@@ -617,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.innerHTML = `
                 <td><strong>${cliente.nombre}</strong></td>
                 <td><a href="https://wa.me/52${cliente.telefono}" target="_blank" style="color:var(--color-gold);text-decoration:underline;">${cliente.telefono}</a></td>
-                <td>${className}<br><small>${day} - ${formattedTime}</small></td>
+                <td>${className}<br><small>${dateLabel} - ${formattedTime}</small></td>
                 <td>${coachName}</td>
                 <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
                 <td>${actionBtnHtml}</td>
@@ -738,12 +740,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.style.opacity = '0.7';
                     btn.disabled = true;
                     
-                    const claseInfo = `${className} - ${getSpanishDay(activeDay)} ${formattedTime}`;
+                    const activeDayBtn = document.querySelector('.week-day-btn.active');
+                    const bookingDate = activeDayBtn ? activeDayBtn.getAttribute('data-date') : new Date().toISOString().split('T')[0];
+                    const formattedDate = formatDateSpanish(bookingDate);
+                    
+                    const claseInfo = `${className} - ${formattedDate} ${formattedTime}`;
                     
                     const { data: resData, error: resError } = await supabase
                         .from('reservas')
                         .insert([
-                            { cliente_id: currentUser.id, clase_id: clase.id, estatus_pago: 'Pendiente' }
+                            { 
+                                cliente_id: currentUser.id, 
+                                clase_id: clase.id, 
+                                estatus_pago: 'Pendiente',
+                                fecha: bookingDate
+                            }
                         ]);
                         
                     if (resError) {
@@ -774,6 +785,51 @@ document.addEventListener('DOMContentLoaded', () => {
             
             return;
         }
+    };
+
+    const formatDateSpanish = (dateStr) => {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        let formatted = date.toLocaleDateString('es-MX', options);
+        return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    };
+
+    const initializeCalendar = () => {
+        const dayButtons = document.querySelectorAll('.week-day-btn');
+        if (dayButtons.length === 0) return;
+
+        const today = new Date();
+        const currentDay = today.getDay(); // 0: Dom, 1: Lun, ...
+        
+        // Si hoy es domingo (0), cargamos la semana que viene. Si no, cargamos la semana actual.
+        const mondayOffset = currentDay === 0 ? 1 : 1 - currentDay;
+        const baseDate = new Date(today);
+        baseDate.setDate(today.getDate() + mondayOffset);
+
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        
+        dayButtons.forEach((btn) => {
+            const dayCode = btn.getAttribute('data-day');
+            const dayIdx = days.indexOf(dayCode);
+            if (dayIdx !== -1) {
+                const targetDate = new Date(baseDate);
+                targetDate.setDate(baseDate.getDate() + dayIdx);
+                
+                const year = targetDate.getFullYear();
+                const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+                const dateNum = String(targetDate.getDate()).padStart(2, '0');
+                const fullDateStr = `${year}-${month}-${dateNum}`;
+                
+                btn.setAttribute('data-date', fullDateStr);
+                
+                const numEl = btn.querySelector('.day-num');
+                if (numEl) {
+                    numEl.innerText = dateNum;
+                }
+            }
+        });
     };
 
     const formatTime12h = (time24) => {
@@ -917,6 +973,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 9. INICIALIZACIÓN DE DATOS Y SESIÓN DE SUPABASE
     if (supabase) {
+        // Inicializar las fechas del calendario dinámicamente
+        initializeCalendar();
+        
         // Cargar clases desde la base de datos
         fetchClassesFromDb();
 
