@@ -487,7 +487,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadAccountDashboard = async () => {
-        if (!currentUser || !currentUserProfile) return;
+        if (!currentUser) return;
+
+        // Si el perfil aún no está cargado o falló previamente, intentamos recuperarlo en vivo
+        if (!currentUserProfile) {
+            const { data: profile, error } = await supabase
+                .from('clientes')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+                
+            if (error || !profile) {
+                console.error("No se pudo cargar el perfil del usuario:", error);
+                accountModalTitle.innerText = 'ERROR AL CARGAR PERFIL';
+                clientBookingsList.innerHTML = '<tr><td colspan="3" class="table-loading" style="color:#ff6b6b;font-size:0.9rem;">No se encontraron los datos de tu cuenta. Por favor contacta al administrador del estudio.</td></tr>';
+                return;
+            }
+            currentUserProfile = profile;
+            btnProfile.classList.add('logged-in');
+        }
 
         accountModalTitle.innerText = `HOLA, ${currentUserProfile.nombre.toUpperCase()}`;
         
