@@ -110,6 +110,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // 0. CONFIGURACIÓN E INICIALIZACIÓN DE SUPABASE
+    const SUPABASE_URL = 'https://wxwtacfuabpjloreiiws.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4d3RhY2Z1YWJwamxvcmVpaXdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MjA2MzUsImV4cCI6MjA5NzM5NjYzNX0.iZw0Fsk95g5g8hQf2JjP6h3hFoGpJD7rveZUFhzUsbY';
+    
+    let supabase = null;
+    try {
+        if (SUPABASE_URL !== 'TU_PROJECT_URL_AQUI' && SUPABASE_ANON_KEY !== 'TU_ANON_KEY_AQUI') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('Cliente de Supabase inicializado correctamente.');
+        } else {
+            console.warn('Supabase no inicializado: URL y llave anónima no especificadas.');
+        }
+    } catch (e) {
+        console.error('Error al inicializar cliente de Supabase:', e);
+    }
+
     // 5. SISTEMA DE MODALES (Booking y Merch)
     const bookingModal = document.getElementById('booking-modal');
     const merchModal = document.getElementById('merch-modal');
@@ -122,6 +138,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const packageButtons = document.querySelectorAll('.package-btn');
     const openBookingButtons = document.querySelectorAll('.open-booking-btn');
     const merchCards = document.querySelectorAll('.merch-card');
+
+    // Auth Modal DOM Elements
+    const authModal = document.getElementById('auth-modal');
+    const btnCloseAuth = document.getElementById('btn-close-auth');
+    const formLogin = document.getElementById('form-login');
+    const formRegister = document.getElementById('form-register');
+    const authModalTitle = document.getElementById('auth-modal-title');
+    const linkShowRegister = document.getElementById('link-show-register');
+    const linkShowLogin = document.getElementById('link-show-login');
+    const btnProfile = document.getElementById('btn-profile');
+
+    // Account Modal DOM Elements
+    const accountModal = document.getElementById('account-modal');
+    const btnCloseAccount = document.getElementById('btn-close-account');
+    const btnLogout = document.getElementById('btn-logout');
+    const panelClient = document.getElementById('panel-client');
+    const panelAdmin = document.getElementById('panel-admin');
+    
+    const userPhoneSpan = document.getElementById('user-phone');
+    const userInjuriesSpan = document.getElementById('user-injuries');
+    const accountModalTitle = document.getElementById('account-modal-title');
+    const clientBookingsList = document.getElementById('client-bookings-list');
+    const adminBookingsList = document.getElementById('admin-bookings-list');
 
     // Datos estáticos de merchandising para inyectar en el modal
     const merchProductsData = {
@@ -145,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lenis) lenis.stop(); // Pausa scroll de fondo para optimizar WebView
         modalEl.setAttribute('aria-hidden', 'false');
         
-        if (modalEl === bookingModal && typeof renderSessions === 'function') {
+        if (modalEl === bookingModal) {
             renderSessions();
         }
     };
@@ -153,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = (modalEl) => {
         modalEl.classList.remove('active');
         if (lenis) lenis.start(); // Reanuda scroll
-        
         modalEl.setAttribute('aria-hidden', 'true');
     };
 
@@ -272,6 +310,345 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Alternar formularios Auth Modal
+    linkShowRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        formLogin.classList.add('hidden');
+        formRegister.classList.remove('hidden');
+        authModalTitle.innerText = 'CREAR CUENTA';
+    });
+
+    linkShowLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        formRegister.classList.add('hidden');
+        formLogin.classList.remove('hidden');
+        authModalTitle.innerText = 'INICIAR SESIÓN';
+    });
+
+    // Cerrar modals Auth y Account
+    btnCloseAuth.addEventListener('click', () => closeModal(authModal));
+    authModal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(authModal));
+    btnCloseAccount.addEventListener('click', () => closeModal(accountModal));
+    accountModal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(accountModal));
+
+    // Registro e Inicio de sesión
+    formLogin.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        if (!supabase) {
+            alert('Supabase no está configurado.');
+            return;
+        }
+
+        const submitBtn = formLogin.querySelector('.auth-submit-btn');
+        submitBtn.innerText = 'INGRESANDO...';
+        submitBtn.disabled = true;
+
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        
+        submitBtn.innerText = 'INGRESAR';
+        submitBtn.disabled = false;
+
+        if (error) {
+            alert('Error al iniciar sesión: ' + error.message);
+        } else {
+            closeModal(authModal);
+            showToast('Sesión Iniciada', 'Bienvenido de vuelta a Once:Once.');
+            formLogin.reset();
+        }
+    });
+
+    formRegister.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nombre = document.getElementById('reg-name').value;
+        const telefono = document.getElementById('reg-phone').value;
+        const lesiones = document.getElementById('reg-injuries').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+
+        if (!supabase) {
+            alert('Supabase no está configurado.');
+            return;
+        }
+
+        const submitBtn = formRegister.querySelector('.auth-submit-btn');
+        submitBtn.innerText = 'CREANDO CUENTA...';
+        submitBtn.disabled = true;
+
+        // Pasamos los datos adicionales en el metadata del usuario para que el Trigger de base de datos
+        // pueda procesar el perfil automáticamente sin importar si la confirmación de email está activa.
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    nombre,
+                    telefono,
+                    historial_lesiones: lesiones,
+                    rol: 'cliente'
+                }
+            }
+        });
+
+        if (error) {
+            submitBtn.innerText = 'CREAR CUENTA';
+            submitBtn.disabled = false;
+            alert('Error al registrar usuario: ' + error.message);
+            return;
+        }
+
+        if (data.user) {
+            // Inserción manual de respaldo por si no se configuró el trigger de base de datos
+            const { error: profileError } = await supabase
+                .from('clientes')
+                .insert([
+                    { id: data.user.id, nombre, telefono, email, historial_lesiones: lesiones, rol: 'cliente' }
+                ]);
+
+            submitBtn.innerText = 'CREAR CUENTA';
+            submitBtn.disabled = false;
+
+            if (profileError) {
+                // Código de error 23505 es clave duplicada (indica que el trigger ya insertó el perfil exitosamente)
+                if (profileError.code === '23505') {
+                    closeModal(authModal);
+                    showToast('Registro Exitoso', 'Tu cuenta ha sido creada. ¡Bienvenido!');
+                    formRegister.reset();
+                } else {
+                    alert('Cuenta creada pero hubo un error al guardar tu perfil: ' + profileError.message);
+                }
+            } else {
+                closeModal(authModal);
+                showToast('Registro Exitoso', 'Tu cuenta ha sido creada. ¡Bienvenido!');
+                formRegister.reset();
+            }
+        }
+    });
+
+    btnLogout.addEventListener('click', async () => {
+        if (!supabase) return;
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            alert('Error al cerrar sesión: ' + error.message);
+        } else {
+            closeModal(accountModal);
+            showToast('Sesión Cerrada', 'Has cerrado sesión correctamente.');
+        }
+    });
+
+    // Control de clic en el botón Perfil
+    btnProfile.addEventListener('click', () => {
+        if (currentUser) {
+            openModal(accountModal);
+            loadAccountDashboard();
+        } else {
+            formRegister.classList.add('hidden');
+            formLogin.classList.remove('hidden');
+            authModalTitle.innerText = 'INICIAR SESIÓN';
+            openModal(authModal);
+        }
+    });
+
+    // Datos de Sesión Dinámicos
+    let currentUser = null;
+    let currentUserProfile = null;
+    let dbClassesList = [];
+
+    const fetchClassesFromDb = async () => {
+        if (!supabase) return;
+        try {
+            const { data, error } = await supabase
+                .from('clases')
+                .select(`
+                    id,
+                    dia_semana,
+                    hora_inicio,
+                    hora_fin,
+                    capacidad_maxima,
+                    disciplinas (nombre),
+                    coaches (nombre)
+                `)
+                .eq('activo', true);
+                
+            if (!error && data) {
+                dbClassesList = data;
+                console.log(`Cargadas ${data.length} clases desde Supabase.`);
+                if (bookingModal.classList.contains('active')) {
+                    renderSessions();
+                }
+            } else if (error) {
+                console.error("Error al obtener clases de la BD:", error);
+            }
+        } catch (e) {
+            console.error("Error al obtener clases:", e);
+        }
+    };
+
+    const loadAccountDashboard = async () => {
+        if (!currentUser || !currentUserProfile) return;
+
+        accountModalTitle.innerText = `HOLA, ${currentUserProfile.nombre.toUpperCase()}`;
+        
+        if (currentUserProfile.rol === 'admin') {
+            panelClient.classList.add('hidden');
+            panelAdmin.classList.remove('hidden');
+            document.getElementById('account-modal-tag').innerText = 'DASHBOARD ADMIN';
+            await loadAdminBookings();
+        } else {
+            panelAdmin.classList.add('hidden');
+            panelClient.classList.remove('hidden');
+            document.getElementById('account-modal-tag').innerText = 'MI CUENTA';
+            
+            userPhoneSpan.innerText = currentUserProfile.telefono || '-';
+            userInjuriesSpan.innerText = currentUserProfile.historial_lesiones || 'Ninguna';
+            await loadClientBookings();
+        }
+    };
+
+    const loadClientBookings = async () => {
+        clientBookingsList.innerHTML = '<tr><td colspan="3" class="table-loading">Cargando tus reservas...</td></tr>';
+        
+        const { data: bookings, error } = await supabase
+            .from('reservas')
+            .select(`
+                id,
+                estatus_pago,
+                clases (
+                    dia_semana,
+                    hora_inicio,
+                    disciplinas (nombre),
+                    coaches (nombre)
+                )
+            `)
+            .eq('cliente_id', currentUser.id)
+            .order('created_at', { ascending: false });
+            
+        clientBookingsList.innerHTML = '';
+        
+        if (error) {
+            clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">Error al cargar reservas.</td></tr>`;
+            return;
+        }
+        
+        if (!bookings || bookings.length === 0) {
+            clientBookingsList.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">No tienes reservas activas.</td></tr>`;
+            return;
+        }
+        
+        bookings.forEach(booking => {
+            const clase = booking.clases;
+            if (!clase) return;
+            
+            const className = clase.disciplinas?.nombre || 'Clase';
+            const coachName = clase.coaches?.nombre || 'Ani';
+            const formattedTime = formatTime12h(clase.hora_inicio);
+            const day = getSpanishDay(clase.dia_semana);
+            
+            const statusClass = booking.estatus_pago === 'Confirmado 50%' ? 'confirmed' : 'pending';
+            const statusLabel = booking.estatus_pago || 'Pendiente';
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${className}</strong><br><small>${day} - ${formattedTime}</small></td>
+                <td>${coachName}</td>
+                <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+            `;
+            clientBookingsList.appendChild(row);
+        });
+    };
+
+    const loadAdminBookings = async () => {
+        adminBookingsList.innerHTML = '<tr><td colspan="6" class="table-loading">Cargando todas las reservas...</td></tr>';
+        
+        const { data: bookings, error } = await supabase
+            .from('reservas')
+            .select(`
+                id,
+                estatus_pago,
+                clientes (
+                    nombre,
+                    telefono
+                ),
+                clases (
+                    dia_semana,
+                    hora_inicio,
+                    disciplinas (nombre),
+                    coaches (nombre)
+                )
+            `)
+            .order('created_at', { ascending: false });
+            
+        adminBookingsList.innerHTML = '';
+        
+        if (error) {
+            adminBookingsList.innerHTML = `<tr><td colspan="6" class="table-loading">Error al cargar todas las reservas.</td></tr>`;
+            return;
+        }
+        
+        if (!bookings || bookings.length === 0) {
+            adminBookingsList.innerHTML = `<tr><td colspan="6" class="no-bookings-msg">No hay reservas registradas.</td></tr>`;
+            return;
+        }
+        
+        bookings.forEach(booking => {
+            const cliente = booking.clientes;
+            const clase = booking.clases;
+            if (!cliente || !clase) return;
+            
+            const className = clase.disciplinas?.nombre || 'Clase';
+            const coachName = clase.coaches?.nombre || 'Ani';
+            const formattedTime = formatTime12h(clase.hora_inicio);
+            const day = getSpanishDay(clase.dia_semana);
+            
+            const statusClass = booking.estatus_pago === 'Confirmado 50%' ? 'confirmed' : 'pending';
+            const statusLabel = booking.estatus_pago || 'Pendiente';
+            
+            const row = document.createElement('tr');
+            
+            let actionBtnHtml = '';
+            if (booking.estatus_pago !== 'Confirmado 50%') {
+                actionBtnHtml = `<button class="action-confirm-btn" data-reserva-id="${booking.id}">Confirmar</button>`;
+            } else {
+                actionBtnHtml = `<span style="font-size:0.75rem;color:#888;">Listo</span>`;
+            }
+            
+            row.innerHTML = `
+                <td><strong>${cliente.nombre}</strong></td>
+                <td><a href="https://wa.me/52${cliente.telefono}" target="_blank" style="color:var(--color-gold);text-decoration:underline;">${cliente.telefono}</a></td>
+                <td>${className}<br><small>${day} - ${formattedTime}</small></td>
+                <td>${coachName}</td>
+                <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                <td>${actionBtnHtml}</td>
+            `;
+            
+            const btnConfirm = row.querySelector('.action-confirm-btn');
+            if (btnConfirm) {
+                btnConfirm.addEventListener('click', async () => {
+                    btnConfirm.innerText = '...';
+                    btnConfirm.disabled = true;
+                    
+                    const { error: updateError } = await supabase
+                        .from('reservas')
+                        .update({ estatus_pago: 'Confirmado 50%' })
+                        .eq('id', booking.id);
+                        
+                    if (updateError) {
+                        alert('Error al actualizar reserva: ' + updateError.message);
+                        btnConfirm.innerText = 'Confirmar';
+                        btnConfirm.disabled = false;
+                    } else {
+                        showToast('Pago Confirmado', 'La reserva ha sido confirmada.');
+                        loadAdminBookings();
+                    }
+                });
+            }
+            
+            adminBookingsList.appendChild(row);
+        });
+    };
+
     // 6. NOTIFICACIONES TOAST (GPU y Micro-animaciones)
     const toast = document.getElementById('toast-notification');
     const toastTitle = document.getElementById('toast-title');
@@ -292,78 +669,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3500);
     };
 
-    // Datos reales de horarios de Reformer y Tapetes
-    const scheduleData = {
-        reformer: {
-            Mon: [
-                { time: "05:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" },
-                { time: "06:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 3 / 7" },
-                { time: "07:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 5 / 7" }
-            ],
-            Tue: [
-                { time: "07:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 2 / 7" },
-                { time: "08:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" },
-                { time: "09:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 6 / 7" }
-            ],
-            Wed: [
-                { time: "04:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 3 / 7" },
-                { time: "05:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 5 / 7" }
-            ],
-            Thu: [
-                { time: "04:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" },
-                { time: "05:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 2 / 7" }
-            ],
-            Fri: [
-                { time: "07:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" },
-                { time: "08:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 3 / 7" },
-                { time: "09:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 5 / 7" },
-                { time: "04:00 PM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 6 / 7" }
-            ],
-            Sat: [
-                { time: "07:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 5 / 7" },
-                { time: "08:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 3 / 7" },
-                { time: "09:00 AM", name: "Pilates Reformer", instructor: "Ani", available: "Cupo: 4 / 7" }
-            ]
-        },
-        tapetes: {
-            Mon: [
-                { time: "06:30 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 5 / 10" },
-                { time: "08:00 AM", name: "Mat", instructor: "Renata", available: "Cupo: 6 / 10" },
-                { time: "09:30 AM", name: "GAP", instructor: "Nane", available: "Cupo: 4 / 10" },
-                { time: "11:00 AM", name: "Barre", instructor: "Staff", available: "Cupo: 7 / 10" }
-            ],
-            Tue: [
-                { time: "06:30 AM", name: "Mat", instructor: "Renata", available: "Cupo: 4 / 10" },
-                { time: "08:00 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 5 / 10" },
-                { time: "09:30 AM", name: "Barre", instructor: "Staff", available: "Cupo: 6 / 10" },
-                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 5 / 10" }
-            ],
-            Wed: [
-                { time: "06:30 AM", name: "Barre", instructor: "Staff", available: "Cupo: 5 / 10" },
-                { time: "08:00 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 4 / 10" },
-                { time: "09:30 AM", name: "Mat", instructor: "Renata", available: "Cupo: 6 / 10" },
-                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 3 / 10" }
-            ],
-            Thu: [
-                { time: "06:30 AM", name: "Mat", instructor: "Renata", available: "Cupo: 6 / 10" },
-                { time: "08:00 AM", name: "Barre", instructor: "Staff", available: "Cupo: 4 / 10" },
-                { time: "09:30 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 5 / 10" },
-                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 5 / 10" }
-            ],
-            Fri: [
-                { time: "06:30 AM", name: "Barre", instructor: "Staff", available: "Cupo: 4 / 10" },
-                { time: "08:00 AM", name: "Mat", instructor: "Renata", available: "Cupo: 6 / 10" },
-                { time: "09:30 AM", name: "Sculpt", instructor: "Renata", available: "Cupo: 5 / 10" },
-                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 7 / 10" }
-            ],
-            Sat: [
-                { time: "08:00 AM", name: "Mat", instructor: "Renata", available: "Cupo: 5 / 10" },
-                { time: "09:30 AM", name: "Barre", instructor: "Staff", available: "Cupo: 4 / 10" },
-                { time: "11:00 AM", name: "GAP", instructor: "Nane", available: "Cupo: 6 / 10" }
-            ]
-        }
-    };
-
     // Renderizado dinámico de la agenda
     const renderSessions = () => {
         const activeTabEl = document.querySelector('.booking-tab-btn.active');
@@ -376,57 +681,110 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeDay = activeDayEl.getAttribute('data-day');
         
         listContainer.innerHTML = '';
-        const sessions = scheduleData[activeTab][activeDay] || [];
-        
-        if (sessions.length === 0) {
-            listContainer.innerHTML = '<p class="no-sessions">No hay clases programadas para este día.</p>';
-            return;
-        }
-        
-        sessions.forEach(session => {
-            const timeParts = session.time.split(' ');
-            const hour = timeParts[0];
-            const ampm = timeParts[1];
-            
-            const slot = document.createElement('div');
-            slot.className = 'session-slot glass-panel';
-            slot.innerHTML = `
-                <div class="slot-time">
-                    <span class="time-hour">${hour}</span>
-                    <span class="time-ampm">${ampm}</span>
-                </div>
-                <div class="slot-info">
-                    <h4 class="class-name">${session.name}</h4>
-                    <p class="instructor-name">Coach: ${session.instructor}</p>
-                    <span class="availability-badge available">${session.available}</span>
-                </div>
-                <div class="slot-action">
-                    <button class="action-btn-agendar">AGENDAR</button>
-                </div>
-            `;
-            
-            // Añadir listener de WhatsApp al botón dinámico
-            slot.querySelector('.action-btn-agendar').addEventListener('click', (e) => {
-                const btn = e.target;
-                const text = `¡Hola! Me interesa agendar la clase de "${session.name}" con ${session.instructor} el día ${getSpanishDay(activeDay)} a las ${session.time}. ¿Tienen disponibilidad?`;
-                
-                btn.innerText = 'PROCESANDO...';
-                btn.style.opacity = '0.7';
-                btn.disabled = true;
-                
-                setTimeout(() => {
-                    sendWhatsAppMessage(text);
-                    closeModal(bookingModal);
-                    
-                    // Restablecer botón
-                    btn.innerText = 'AGENDAR';
-                    btn.style.opacity = '1';
-                    btn.disabled = false;
-                }, 800);
+
+        if (dbClassesList.length > 0) {
+            const isReformerTab = activeTab === 'reformer';
+            const filtered = dbClassesList.filter(c => {
+                const isReformerClass = c.disciplinas?.nombre?.toLowerCase().includes('reformer');
+                return c.dia_semana === activeDay && (isReformerTab ? isReformerClass : !isReformerClass);
             });
             
-            listContainer.appendChild(slot);
-        });
+            filtered.sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
+            
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<p class="no-sessions">No hay clases programadas para este día.</p>';
+                return;
+            }
+            
+            filtered.forEach(clase => {
+                const formattedTime = formatTime12h(clase.hora_inicio);
+                const timeParts = formattedTime.split(' ');
+                const hour = timeParts[0];
+                const ampm = timeParts[1];
+                
+                const className = clase.disciplinas?.nombre || 'Clase';
+                const coachName = clase.coaches?.nombre || 'Ani';
+                
+                const slot = document.createElement('div');
+                slot.className = 'session-slot glass-panel';
+                slot.innerHTML = `
+                    <div class="slot-time">
+                        <span class="time-hour">${hour}</span>
+                        <span class="time-ampm">${ampm}</span>
+                    </div>
+                    <div class="slot-info">
+                        <h4 class="class-name">${className}</h4>
+                        <p class="instructor-name">Coach: ${coachName}</p>
+                        <span class="availability-badge available">Cupo: ${clase.capacidad_maxima}</span>
+                    </div>
+                    <div class="slot-action">
+                        <button class="action-btn-agendar">AGENDAR</button>
+                    </div>
+                `;
+                
+                slot.querySelector('.action-btn-agendar').addEventListener('click', async (e) => {
+                    const btn = e.target;
+                    
+                    if (!currentUser) {
+                        closeModal(bookingModal);
+                        formRegister.classList.add('hidden');
+                        formLogin.classList.remove('hidden');
+                        authModalTitle.innerText = 'INICIAR SESIÓN';
+                        openModal(authModal);
+                        return;
+                    }
+                    
+                    btn.innerText = 'PROCESANDO...';
+                    btn.style.opacity = '0.7';
+                    btn.disabled = true;
+                    
+                    const claseInfo = `${className} - ${getSpanishDay(activeDay)} ${formattedTime}`;
+                    
+                    const { data: resData, error: resError } = await supabase
+                        .from('reservas')
+                        .insert([
+                            { cliente_id: currentUser.id, clase_id: clase.id, estatus_pago: 'Pendiente' }
+                        ]);
+                        
+                    if (resError) {
+                        console.error("Error al guardar reserva:", resError);
+                        alert("Hubo un problema procesando tu reserva: " + resError.message);
+                        btn.innerText = 'AGENDAR';
+                        btn.style.opacity = '1';
+                        btn.disabled = false;
+                        return;
+                    }
+                    
+                    const WA_NUMBER = '529513506047';
+                    const message = `Hola Once:Once. Me interesa la clase de ${claseInfo} con ${coachName}. Para asegurar mi lugar, ¿podrían proporcionarme la cuenta para transferir el 50% de anticipo? 🤍`;
+                    const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+                    
+                    setTimeout(() => {
+                        window.open(waUrl, '_blank');
+                        closeModal(bookingModal);
+                        
+                        btn.innerText = 'AGENDAR';
+                        btn.style.opacity = '1';
+                        btn.disabled = false;
+                    }, 800);
+                });
+                
+                listContainer.appendChild(slot);
+            });
+            
+            return;
+        }
+    };
+
+    const formatTime12h = (time24) => {
+        const parts = time24.split(':');
+        let hours = parseInt(parts[0]);
+        const minutes = parts[1];
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        const hourStr = hours < 10 ? '0' + hours : hours;
+        return `${hourStr}:${minutes} ${ampm}`;
     };
 
     const getSpanishDay = (day) => {
@@ -556,5 +914,40 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.style.transform = '';
         }, { passive: true });
     });
+
+    // 9. INICIALIZACIÓN DE DATOS Y SESIÓN DE SUPABASE
+    if (supabase) {
+        // Cargar clases desde la base de datos
+        fetchClassesFromDb();
+
+        // Escuchar cambios de estado de autenticación de forma reactiva
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log("Auth state changed:", event, session);
+            currentUser = session?.user || null;
+            if (currentUser) {
+                const { data: profile, error } = await supabase
+                    .from('clientes')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+                    
+                if (!error && profile) {
+                    currentUserProfile = profile;
+                    btnProfile.classList.add('logged-in');
+                } else {
+                    currentUserProfile = null;
+                    btnProfile.classList.remove('logged-in');
+                }
+            } else {
+                currentUserProfile = null;
+                btnProfile.classList.remove('logged-in');
+            }
+
+            // Si el modal de cuenta está activo, refrescar la vista
+            if (accountModal.classList.contains('active')) {
+                loadAccountDashboard();
+            }
+        });
+    }
 
 });

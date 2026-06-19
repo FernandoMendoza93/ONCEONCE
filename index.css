@@ -1947,3 +1947,246 @@ html.lenis, html.lenis body {
     opacity: 1;
     transform: translate3d(0, 0, 0);
 }
+
+/* ==========================================================================
+   16. AUTHENTICATION & ACCOUNT DASHBOARD MODALS
+   ========================================================================== */
+
+/* Formularios de Autenticación */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 0.5rem 0;
+}
+
+.auth-form.hidden {
+    display: none !important;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+}
+
+.form-group input,
+.form-group textarea {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    color: var(--color-text-base);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    transition: var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--color-gold);
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.form-group textarea {
+    resize: none;
+}
+
+.auth-submit-btn {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    background-color: var(--color-gold);
+    color: var(--color-bg-base);
+    border: none;
+    padding: 0.9rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    margin-top: 0.5rem;
+}
+
+.auth-submit-btn:hover {
+    background-color: #dcbfa0;
+    transform: translateY(-2px);
+}
+
+.auth-switch {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.auth-switch a {
+    color: var(--color-gold);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* Panel de Cuenta y Dashboard Admin */
+.account-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.account-panel.hidden {
+    display: none !important;
+}
+
+.user-profile-summary {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    padding: 1.25rem;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.user-profile-summary p {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.user-profile-summary strong {
+    color: var(--color-text-base);
+}
+
+.panel-section-title {
+    font-family: var(--font-title);
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    color: var(--color-gold);
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+}
+
+/* Tabla de Reservas */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.account-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.account-table th,
+.account-table td {
+    padding: 0.9rem 0.75rem;
+    font-size: 0.8rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.account-table th {
+    font-family: var(--font-title);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.account-table td {
+    color: var(--color-text-base);
+}
+
+.table-loading {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-style: italic;
+    padding: 2rem 0 !important;
+}
+
+.no-bookings-msg {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 2rem 0 !important;
+}
+
+/* Badges de Pago */
+.status-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background-color: rgba(220, 160, 50, 0.12);
+    color: #e0a540;
+    border: 1px solid rgba(220, 160, 50, 0.2);
+}
+
+.status-badge.confirmed {
+    background-color: rgba(197, 168, 128, 0.12);
+    color: var(--color-gold);
+    border: 1px solid rgba(197, 168, 128, 0.2);
+}
+
+/* Botones del Tablero */
+.action-confirm-btn {
+    background-color: transparent;
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.action-confirm-btn:hover {
+    background-color: var(--color-gold);
+    color: var(--color-bg-base);
+}
+
+.action-confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.account-footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1.5rem;
+}
+
+.logout-btn {
+    background-color: rgba(200, 60, 60, 0.1);
+    border: 1px solid rgba(200, 60, 60, 0.2);
+    color: #ff5050;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.logout-btn:hover {
+    background-color: rgba(200, 60, 60, 0.2);
+    transform: translateY(-1px);
+}
