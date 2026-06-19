@@ -1001,28 +1001,17 @@ document.addEventListener('DOMContentLoaded', () => {
         supabase.auth.onAuthStateChange(async (event, session) => {
             console.log("Auth state changed:", event, session);
             currentUser = session?.user || null;
+            
             if (currentUser) {
-                const { data: profile, error } = await supabase
-                    .from('clientes')
-                    .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
-                    
-                if (!error && profile) {
-                    currentUserProfile = profile;
-                    btnProfile.classList.add('logged-in');
-                } else {
-                    currentUserProfile = null;
-                    btnProfile.classList.remove('logged-in');
-                }
+                btnProfile.classList.add('logged-in');
             } else {
                 currentUserProfile = null;
                 btnProfile.classList.remove('logged-in');
-            }
-
-            // Si el modal de cuenta está activo, refrescar la vista
-            if (accountModal.classList.contains('active')) {
-                loadAccountDashboard();
+                
+                // Si el modal de cuenta estaba abierto en esta pestaña, lo cerramos
+                if (accountModal.classList.contains('active')) {
+                    closeModal(accountModal);
+                }
             }
         });
     }
