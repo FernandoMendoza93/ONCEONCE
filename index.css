@@ -2412,6 +2412,7 @@ html.lenis, html.lenis body {
 
 /* Ajustes de contraste para botones y selectores en Nude */
 .theme-nude .nav-cta-btn,
+.theme-nude .primary-cta-btn,
 .theme-nude .booking-tab-btn,
 .theme-nude .week-day-btn,
 .theme-nude .action-btn-agendar,
@@ -2426,6 +2427,8 @@ html.lenis, html.lenis body {
 
 /* Forzar contraste en hover/active/estados de seleccion */
 .theme-nude .nav-cta-btn:hover,
+.theme-nude .primary-cta-btn:hover,
+.theme-nude .primary-cta-btn:active,
 .theme-nude .booking-tab-btn:hover,
 .theme-nude .booking-tab-btn.active,
 .theme-nude .week-day-btn:hover,
