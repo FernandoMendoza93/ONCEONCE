@@ -119,7 +119,7 @@ html.lenis, html.lenis body {
 }
 
 .main-header.scrolled {
-    background-color: hsla(160, 46%, 7%, 0.95);
+    background-color: var(--header-scrolled-bg, hsla(160, 46%, 7%, 0.95));
     border-bottom: 1px solid var(--glass-border);
 }
 
@@ -351,7 +351,7 @@ html.lenis, html.lenis body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, var(--color-bg-base) 10%, rgba(10, 28, 22, 0.5) 60%, rgba(10, 28, 22, 0.85) 100%);
+    background: var(--hero-overlay-gradient, linear-gradient(to top, var(--color-bg-base) 10%, rgba(10, 28, 22, 0.5) 60%, rgba(10, 28, 22, 0.85) 100%));
     z-index: -1;
 }
 
@@ -849,13 +849,48 @@ html.lenis, html.lenis body {
 
 /* Sapphire Card */
 .sapphire-card {
-    background: linear-gradient(135deg, hsl(215, 51%, 8%) 0%, var(--color-sapphire) 100%);
-    border-color: rgba(60, 110, 180, 0.15);
+    background: linear-gradient(135deg, #b0946d 0%, #C5A880 100%);
+    border-color: rgba(197, 168, 128, 0.25);
+    color: #1A1A1A;
 }
 
 .sapphire-card:hover {
-    border-color: rgba(60, 110, 180, 0.35);
-    box-shadow: 0 20px 45px rgba(60, 110, 180, 0.15);
+    border-color: rgba(197, 168, 128, 0.5);
+    box-shadow: 0 20px 45px rgba(197, 168, 128, 0.25);
+}
+
+.sapphire-card .package-name,
+.sapphire-card .price-amount,
+.sapphire-card .price-currency,
+.sapphire-card .package-features li {
+    color: #1A1A1A;
+}
+
+.sapphire-card .price-period {
+    color: #4A4A4A;
+}
+
+.sapphire-card .package-badge {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1A1A1A;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.sapphire-card .check-icon {
+    color: #1A1A1A;
+}
+
+.sapphire-card .btn-sapphire {
+    background-color: #1A1A1A;
+    color: #F9F6F0;
+    border-color: #1A1A1A;
+}
+
+.sapphire-card .btn-sapphire:hover,
+.sapphire-card .btn-sapphire:active {
+    background-color: transparent;
+    color: #1A1A1A;
+    border-color: #1A1A1A;
 }
 
 /* Emerald Card */
@@ -2189,4 +2224,128 @@ html.lenis, html.lenis body {
 .logout-btn:hover {
     background-color: rgba(200, 60, 60, 0.2);
     transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   PALETA "NUDES" (Tono Tierra / Crema Reversible)
+   ========================================================================== */
+.theme-nude {
+    /* Mapeo de variables principales */
+    --color-bg-base: transparent;
+    --color-bg-stone: transparent;
+    
+    --color-text-light: #1A1A1A;
+    --color-text-muted: rgba(26, 26, 26, 0.7);
+    
+    --color-gold: #BB8A5F;
+    --color-gold-hover: #D5A277;
+    
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glass-border: rgba(197, 168, 128, 0.4);
+    --glass-shadow: rgba(187, 138, 95, 0.15);
+    
+    --header-scrolled-bg: rgba(255, 237, 215, 0.95);
+    --menu-panel-bg: #F3D4B5;
+    --modal-container-bg: #E7BC91;
+    --hero-overlay-gradient: linear-gradient(to top, rgba(255, 237, 215, 0.9) 10%, rgba(255, 237, 215, 0.3) 60%, rgba(255, 237, 215, 0.7) 100%);
+
+    /* EL DEGRADADO DE SCROLL PURE CSS */
+    background: linear-gradient(
+        to bottom,
+        #FFEDD7 0%,    /* Inicio: Muy claro */
+        #F3D4B5 20%,
+        #E7BC91 50%,   /* Medio: Tono intermedio */
+        #D5A277 80%,
+        #BB8A5F 100%   /* Final de la página: Oscuro/Tierra */
+    ) !important;
+    
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-attachment: scroll; 
+    color: #1A1A1A;
+}
+
+/* Modificadores específicos para contraste en modo Nude */
+.theme-nude .scroll-reveal h2,
+.theme-nude .scroll-reveal p,
+.theme-nude .section-title,
+.theme-nude .section-description,
+.theme-nude .discipline-name,
+.theme-nude .discipline-text,
+.theme-nude .benefit-title,
+.theme-nude .benefit-text,
+.theme-nude .card-title,
+.theme-nude .card-text,
+.theme-nude .contact-info h3,
+.theme-nude .contact-info p,
+.theme-nude .contact-info a,
+.theme-nude .footer-legal,
+.theme-nude .footer-rights {
+    color: #1A1A1A !important;
+}
+
+.theme-nude .section-tag,
+.theme-nude .card-tag {
+    color: #BB8A5F !important;
+}
+
+.theme-nude .map-iframe {
+    filter: grayscale(40%) contrast(100%) brightness(95%) !important;
+    opacity: 0.75 !important;
+}
+
+.theme-nude .map-overlay {
+    background: radial-gradient(circle at center, rgba(255, 237, 215, 0.1) 0%, rgba(213, 162, 119, 0.45) 100%) !important;
+}
+
+/* Ajustes de menú lateral en Nude */
+.theme-nude .menu-panel {
+    background-color: var(--menu-panel-bg) !important;
+    color: #1A1A1A !important;
+}
+
+.theme-nude .menu-link {
+    color: #1A1A1A !important;
+}
+
+.theme-nude .menu-link:hover {
+    color: #BB8A5F !important;
+}
+
+/* Ajustes de modales en Nude */
+.theme-nude .modal-container {
+    background-color: var(--modal-container-bg) !important;
+    color: #1A1A1A !important;
+    box-shadow: 0 -15px 40px rgba(187, 138, 95, 0.25) !important;
+}
+
+.theme-nude .modal-title,
+.theme-nude .class-name,
+.theme-nude .instructor-name,
+.theme-nude .time-hour,
+.theme-nude .time-ampm,
+.theme-nude .availability-badge,
+.theme-nude .modal-body label,
+.theme-nude .auth-switch-text {
+    color: #1A1A1A !important;
+}
+
+.theme-nude .modal-body input {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    color: #1A1A1A !important;
+    border-color: rgba(197, 168, 128, 0.5) !important;
+}
+
+.theme-nude .modal-body input:focus {
+    border-color: #BB8A5F !important;
+    box-shadow: 0 0 8px rgba(187, 138, 95, 0.25) !important;
+}
+
+.theme-nude .btn-profile {
+    color: #1A1A1A !important;
+}
+
+.theme-nude .btn-profile.logged-in {
+    background-color: #BB8A5F !important;
+    color: #FFEDD7 !important;
 }

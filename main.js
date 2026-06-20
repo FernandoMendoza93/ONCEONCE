@@ -727,6 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const slot = document.createElement('div');
                 slot.className = 'session-slot glass-panel';
+                slot.setAttribute('data-class-id', clase.id);
                 slot.innerHTML = `
                     <div class="slot-time">
                         <span class="time-hour">${hour}</span>
@@ -735,7 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="slot-info">
                         <h4 class="class-name">${className}</h4>
                         <p class="instructor-name">Coach: ${coachName}</p>
-                        <span class="availability-badge available">Cupo: ${clase.capacidad_maxima}</span>
+                        <span class="availability-badge available">Cupo: 0 / ${clase.capacidad_maxima || 5}</span>
                     </div>
                     <div class="slot-action">
                         <button class="action-btn-agendar">AGENDAR</button>
@@ -800,6 +801,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 listContainer.appendChild(slot);
             });
+
+            // Consultar dinámicamente las reservas de hoy para calcular cupos
+            if (supabase) {
+                const bookingDate = activeDayEl.getAttribute('data-date') || new Date().toISOString().split('T')[0];
+                supabase
+                    .from('reservas')
+                    .select('clase_id')
+                    .eq('fecha', bookingDate)
+                    .then(({ data: reservations, error }) => {
+                        if (!error && reservations) {
+                            const counts = {};
+                            reservations.forEach(r => {
+                                counts[r.clase_id] = (counts[r.clase_id] || 0) + 1;
+                            });
+                            
+                            filtered.forEach(clase => {
+                                const count = counts[clase.id] || 0;
+                                const maxCap = clase.capacidad_maxima || 5;
+                                const slotEl = listContainer.querySelector(`[data-class-id="${clase.id}"]`);
+                                if (slotEl) {
+                                    const badge = slotEl.querySelector('.availability-badge');
+                                    const btn = slotEl.querySelector('.action-btn-agendar');
+                                    
+                                    if (badge) {
+                                        if (count >= maxCap) {
+                                            badge.className = 'availability-badge full';
+                                            badge.innerText = `Clase Llena (${count}/${maxCap})`;
+                                            if (btn) {
+                                                btn.className = 'action-btn-agendar disabled';
+                                                btn.innerText = 'LLENO';
+                                                btn.disabled = true;
+                                            }
+                                        } else if (maxCap - count <= 2) {
+                                            badge.className = 'availability-badge warning';
+                                            badge.innerText = `Últimos ${maxCap - count} lugares (${count}/${maxCap})`;
+                                            if (btn) {
+                                                btn.className = 'action-btn-agendar';
+                                                btn.innerText = 'AGENDAR';
+                                                btn.disabled = false;
+                                            }
+                                        } else {
+                                            badge.className = 'availability-badge available';
+                                            badge.innerText = `Cupo: ${count} / ${maxCap}`;
+                                            if (btn) {
+                                                btn.className = 'action-btn-agendar';
+                                                btn.innerText = 'AGENDAR';
+                                                btn.disabled = false;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+            }
             
             return;
         }
