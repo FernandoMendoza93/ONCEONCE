@@ -2240,13 +2240,13 @@ html.lenis, html.lenis body {
     --color-gold: #BB8A5F;
     --color-gold-hover: #D5A277;
     
-    --glass-bg: rgba(255, 255, 255, 0.4);
-    --glass-border: rgba(197, 168, 128, 0.4);
+    --glass-bg: rgba(255, 246, 235, 0.55); /* Un blanco/nude muy translúcido */
+    --glass-border: rgba(197, 168, 128, 0.3); /* Un borde dorado sutil */
     --glass-shadow: rgba(187, 138, 95, 0.15);
     
     --header-scrolled-bg: rgba(255, 237, 215, 0.95);
     --menu-panel-bg: #F3D4B5;
-    --modal-container-bg: #E7BC91;
+    --modal-container-bg: rgba(255, 246, 235, 0.85); /* Glassmorphism para el modal */
     --hero-overlay-gradient: linear-gradient(to top, rgba(255, 237, 215, 0.9) 10%, rgba(255, 237, 215, 0.3) 60%, rgba(255, 237, 215, 0.7) 100%);
 
     /* EL DEGRADADO DE SCROLL PURE CSS */
@@ -2298,6 +2298,63 @@ html.lenis, html.lenis body {
     background: radial-gradient(circle at center, rgba(255, 237, 215, 0.1) 0%, rgba(213, 162, 119, 0.45) 100%) !important;
 }
 
+/* Tarjetas de Membresía (Glassmorphism en Nude) */
+.theme-nude .package-card {
+    background: rgba(255, 246, 235, 0.55) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(197, 168, 128, 0.3) !important;
+    color: #1A1A1A !important;
+    box-shadow: 0 15px 35px rgba(187, 138, 95, 0.1) !important;
+}
+
+.theme-nude .package-card .package-name,
+.theme-nude .package-card .price-amount,
+.theme-nude .package-card .price-currency,
+.theme-nude .package-card .package-features li {
+    color: #1A1A1A !important;
+}
+
+.theme-nude .package-card .price-period,
+.theme-nude .package-card .price-sub {
+    color: rgba(26, 26, 26, 0.7) !important;
+}
+
+.theme-nude .package-card .package-badge {
+    background-color: rgba(187, 138, 95, 0.15) !important;
+    color: #BB8A5F !important;
+    border-color: rgba(187, 138, 95, 0.3) !important;
+}
+
+.theme-nude .package-card .check-icon {
+    color: #BB8A5F !important;
+}
+
+.theme-nude .package-card .package-btn {
+    background-color: #1A1A1A !important;
+    color: #F9F6F0 !important;
+    border-color: #1A1A1A !important;
+}
+
+.theme-nude .package-card .package-btn:hover,
+.theme-nude .package-card .package-btn:active {
+    background-color: transparent !important;
+    color: #1A1A1A !important;
+    border-color: #1A1A1A !important;
+}
+
+/* Tarjeta de Contacto (Glassmorphism en Nude) */
+.theme-nude .contact-info {
+    background: rgba(255, 246, 235, 0.55) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(197, 168, 128, 0.3) !important;
+    color: #1A1A1A !important;
+    padding: 2.5rem 2rem !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(187, 138, 95, 0.1) !important;
+}
+
 /* Ajustes de menú lateral en Nude */
 .theme-nude .menu-panel {
     background-color: var(--menu-panel-bg) !important;
@@ -2312,9 +2369,12 @@ html.lenis, html.lenis body {
     color: #BB8A5F !important;
 }
 
-/* Ajustes de modales en Nude */
+/* Ajustes de modales en Nude (Glassmorphism) */
 .theme-nude .modal-container {
-    background-color: var(--modal-container-bg) !important;
+    background: rgba(255, 246, 235, 0.85) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(197, 168, 128, 0.3) !important;
     color: #1A1A1A !important;
     box-shadow: 0 -15px 40px rgba(187, 138, 95, 0.25) !important;
 }
