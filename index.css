@@ -2409,3 +2409,41 @@ html.lenis, html.lenis body {
     background-color: #BB8A5F !important;
     color: #FFEDD7 !important;
 }
+
+/* Ajustes de contraste para botones y selectores en Nude */
+.theme-nude .nav-cta-btn,
+.theme-nude .booking-tab-btn,
+.theme-nude .week-day-btn,
+.theme-nude .action-btn-agendar,
+.theme-nude .package-btn,
+.theme-nude .tab-btn,
+.theme-nude .discipline-cta-btn,
+.theme-nude .auth-submit-btn,
+.theme-nude .map-btn {
+    --color-bg-base: #1A1A1A;
+    color: #1A1A1A;
+}
+
+/* Forzar contraste en hover/active/estados de seleccion */
+.theme-nude .nav-cta-btn:hover,
+.theme-nude .booking-tab-btn:hover,
+.theme-nude .booking-tab-btn.active,
+.theme-nude .week-day-btn:hover,
+.theme-nude .week-day-btn.active,
+.theme-nude .week-day-btn.active .day-name,
+.theme-nude .week-day-btn.active .day-num,
+.theme-nude .action-btn-agendar:hover,
+.theme-nude .action-btn-agendar:active,
+.theme-nude .tab-btn:hover,
+.theme-nude .tab-btn.active,
+.theme-nude .discipline-cta-btn:hover,
+.theme-nude .discipline-cta-btn:active,
+.theme-nude .auth-submit-btn:hover,
+.theme-nude .auth-submit-btn:active,
+.theme-nude .map-btn:hover,
+.theme-nude .map-btn:active {
+    background-color: #C5A880 !important;
+    color: #1A1A1A !important;
+    border-color: #C5A880 !important;
+    transition: all 0.3s ease;
+}
