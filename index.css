@@ -316,6 +316,7 @@ html.lenis, html.lenis body {
 /* 5. HERO SECTION CINEMÁTICO */
 .hero-section {
     position: relative;
+    z-index: 1; /* Crea un contexto de apilamiento propio para evitar que los z-index negativos caigan tras el fondo del body */
     width: 100%;
     height: 100dvh; /* unidades viewport dinámicas */
     display: flex;
@@ -352,7 +353,7 @@ html.lenis, html.lenis body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 1; /* Positivo dentro del contenedor base para evitar quedar oculto tras el fondo del body */
+    z-index: -2; /* Detrás del overlay oscuro que está en -1 */
     background-color: #1A1A1A; /* Color de respaldo */
 }
 
@@ -395,7 +396,7 @@ html.lenis, html.lenis body {
         rgba(10, 28, 22, 0.15) 70%, 
         rgba(10, 28, 22, 0.45) 100%
     ));
-    z-index: 2; /* Cambiado a 2 para estar sobre el carrusel (z-index: 1) sin salir del contenedor background */
+    z-index: -1; /* Detrás del contenido pero por delante de las imágenes del carrusel */
 }
 
 .hero-content {
