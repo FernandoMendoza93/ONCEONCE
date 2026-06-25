@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Error al iniciar sesión: ' + error.message);
         } else {
             closeModal(authModal);
-            showToast('Sesión Iniciada', 'Bienvenido de vuelta a Once:Once.');
+            sileo.success({title: 'Sesión Iniciada', description: 'Bienvenido de vuelta a Once:Once.'});
             formLogin.reset();
         }
     });
@@ -414,14 +414,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Código de error 23505 es clave duplicada (indica que el trigger ya insertó el perfil exitosamente)
                 if (profileError.code === '23505') {
                     closeModal(authModal);
-                    showToast('Registro Exitoso', 'Tu cuenta ha sido creada. ¡Bienvenido!');
+                    sileo.success({title: 'Registro Exitoso', description: 'Tu cuenta ha sido creada. ¡Bienvenido!'});
                     formRegister.reset();
                 } else {
                     alert('Cuenta creada pero hubo un error al guardar tu perfil: ' + profileError.message);
                 }
             } else {
                 closeModal(authModal);
-                showToast('Registro Exitoso', 'Tu cuenta ha sido creada. ¡Bienvenido!');
+                sileo.success({title: 'Registro Exitoso', description: 'Tu cuenta ha sido creada. ¡Bienvenido!'});
                 formRegister.reset();
             }
         }
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Error al cerrar sesión: ' + error.message);
         } else {
             closeModal(accountModal);
-            showToast('Sesión Cerrada', 'Has cerrado sesión correctamente.');
+            sileo.success({title: 'Sesión Cerrada', description: 'Has cerrado sesión correctamente.'});
         }
     });
 
@@ -499,8 +499,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 
             if (error || !profile) {
                 console.error("No se pudo cargar el perfil del usuario:", error);
-                accountModalTitle.innerText = 'ERROR AL CARGAR PERFIL';
-                clientBookingsList.innerHTML = '<tr><td colspan="3" class="table-loading" style="color:#ff6b6b;font-size:0.9rem;">No se encontraron los datos de tu cuenta. Por favor contacta al administrador del estudio.</td></tr>';
+                accountModalTitle.innerText = 'SESIÓN CADUCADA';
+                clientBookingsList.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 2rem;"><p style="margin-bottom:1rem;color:#ff6b6b;font-size:0.9rem;">Tu sesión ha expirado por seguridad.</p><button id="btn-re-login" class="buy-cta-btn" style="width:100%;max-width:200px;margin:0 auto;">INICIAR SESIÓN</button></td></tr>';
+                document.getElementById('btn-re-login').addEventListener('click', () => {
+                    closeModal(accountModal);
+                    formRegister.classList.add('hidden');
+                    formLogin.classList.remove('hidden');
+                    authModalTitle.innerText = 'INICIAR SESIÓN';
+                    openModal(authModal);
+                });
                 return;
             }
             currentUserProfile = profile;
@@ -659,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         btnConfirm.innerText = 'Confirmar';
                         btnConfirm.disabled = false;
                     } else {
-                        showToast('Pago Confirmado', 'La reserva ha sido confirmada.');
+                        sileo.success({title: 'Pago Confirmado', description: 'La reserva ha sido confirmada.'});
                         loadAdminBookings();
                     }
                 });
@@ -669,25 +676,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 6. NOTIFICACIONES TOAST (GPU y Micro-animaciones)
-    const toast = document.getElementById('toast-notification');
-    const toastTitle = document.getElementById('toast-title');
-    const toastMsg = document.getElementById('toast-msg');
-    let toastTimeout;
-
-    const showToast = (title, message) => {
-        toastTitle.innerText = title;
-        toastMsg.innerText = message;
-        
-        // Limpia timeouts activos
-        clearTimeout(toastTimeout);
-        
-        toast.classList.add('active');
-        
-        toastTimeout = setTimeout(() => {
-            toast.classList.remove('active');
-        }, 3500);
-    };
+    // 6. NOTIFICACIONES TOAST (Sileo)
+    sileo.init({
+        position: 'top-center',
+        options: {
+            duration: 4000
+        }
+    });
 
     // Renderizado dinámico de la agenda
     const renderSessions = () => {
@@ -766,22 +761,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     const claseInfo = `${className} - ${formattedDate} ${formattedTime}`;
                     
                     const { data: resData, error: resError } = await supabase
-                        .from('reservas')
-                        .insert([
-                            { 
-                                cliente_id: currentUser.id, 
-                                clase_id: clase.id, 
-                                estatus_pago: 'Pendiente',
-                                fecha: bookingDate
-                            }
-                        ]);
+                        .rpc('agendar_clase_atomic', {
+                            p_clase_id: clase.id,
+                            p_fecha: bookingDate
+                        });
                         
                     if (resError) {
                         console.error("Error al guardar reserva:", resError);
-                        alert("Hubo un problema procesando tu reserva: " + resError.message);
                         btn.innerText = 'AGENDAR';
                         btn.style.opacity = '1';
                         btn.disabled = false;
+                        
+                        if (resError.message.includes('CUPO_LLENO')) {
+                            sileo.error({title: "CUPO AGOTADO", description: "Lo sentimos, el último lugar para esta clase acaba de ser reservado. Por favor, selecciona otro horario."});
+                        } else if (resError.message.includes('RESERVA_DUPLICADA')) {
+                            sileo.warning({title: "RESERVA ACTIVA", description: "Ya cuentas con una reserva para esta clase. Te esperamos en el estudio."});
+                        } else if (resError.message.includes('SESION_EXPIRADA')) {
+                            closeModal(bookingModal);
+                            sileo.error({title: "SESIÓN CADUCADA", description: "Tu sesión ha caducado. Ingresa nuevamente para reservar."});
+                            formRegister.classList.add('hidden');
+                            formLogin.classList.remove('hidden');
+                            authModalTitle.innerText = 'INICIAR SESIÓN';
+                            openModal(authModal);
+                        } else if (resError.message.includes('CLASE_NO_ENCONTRADA')) {
+                            sileo.error({title: "HORARIO NO DISPONIBLE", description: "Esta clase ya no se encuentra activa en el horario. Por favor refresca la página."});
+                        } else {
+                            alert("Hubo un problema procesando tu reserva: " + resError.message);
+                        }
                         return;
                     }
                     
