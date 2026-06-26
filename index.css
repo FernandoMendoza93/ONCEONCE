@@ -2492,3 +2492,12 @@ html.lenis, html.lenis body {
 /* Difuminado de secciones */
 .merch-section { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 20%, var(--color-bg-base) 100%) !important; }
 
+
+/* === TRANSICIONES DIFUMINADAS DE SECCIONES === */
+.disciplines-section { background: linear-gradient(to bottom, rgba(30, 30, 30, 0) 0%, var(--color-bg-stone) 10%, var(--color-bg-stone) 100%) !important; }
+.philosophy-section { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 15%, var(--color-bg-base) 100%) !important; }
+.packages-section { background: linear-gradient(to bottom, var(--color-bg-base) 0%, var(--color-bg-stone) 15%, var(--color-bg-stone) 100%) !important; }
+.merch-section { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 15%, var(--color-bg-base) 100%) !important; }
+.contact-section { background: linear-gradient(to bottom, var(--color-bg-base) 0%, var(--color-bg-stone) 15%, var(--color-bg-stone) 100%) !important; }
+footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 15%, var(--color-bg-base) 100%) !important; }
+
