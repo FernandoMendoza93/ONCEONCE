@@ -2479,3 +2479,16 @@ html.lenis, html.lenis body {
     border-color: #C5A880 !important;
     transition: all 0.3s ease;
 }
+
+/* Sileo Notifications Override */
+.sileo-viewport { z-index: 99999 !important; }
+
+
+/* Coming Soon Styles */
+.merch-coming-soon { width: 100%; text-align: center; padding: 4rem 1.5rem; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(197, 168, 128, 0.15); margin: 2rem auto; max-width: 800px; }
+.coming-soon-title { font-family: var(--font-primary); color: var(--color-gold); font-size: 1.5rem; letter-spacing: 0.15em; margin-bottom: 1rem; }
+.coming-soon-desc { color: var(--color-text-muted); font-size: 0.95rem; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+
+/* Difuminado de secciones */
+.merch-section { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 20%, var(--color-bg-base) 100%) !important; }
+
