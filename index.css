@@ -2505,3 +2505,7 @@ footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone
 /* === REMOVER BORDES BLANCOS ENTRE SECCIONES === */
 .disciplines-section, .philosophy-section, .packages-section, .merch-section, .contact-section, footer.main-footer { border-top: none !important; border-bottom: none !important; }
 
+
+/* === Z-INDEX FIX PARA SILEO === */
+[data-sileo-viewport] { z-index: 999999 !important; }
+
