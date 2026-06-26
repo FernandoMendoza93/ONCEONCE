@@ -2501,3 +2501,7 @@ html.lenis, html.lenis body {
 .contact-section { background: linear-gradient(to bottom, var(--color-bg-base) 0%, var(--color-bg-stone) 15%, var(--color-bg-stone) 100%) !important; }
 footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 15%, var(--color-bg-base) 100%) !important; }
 
+
+/* === REMOVER BORDES BLANCOS ENTRE SECCIONES === */
+.disciplines-section, .philosophy-section, .packages-section, .merch-section, .contact-section, footer.main-footer { border-top: none !important; border-bottom: none !important; }
+
