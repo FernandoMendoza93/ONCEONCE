@@ -712,21 +712,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             filtered.forEach(clase => {
-                const formattedTime = formatTime12h(clase.hora_inicio);
-                const timeParts = formattedTime.split(' ');
-                const hour = timeParts[0];
-                const ampm = timeParts[1];
+                const startTimeStr = formatTime12h(clase.hora_inicio).replace(' ', '').toLowerCase();
+                const endTimeStr = clase.hora_fin ? formatTime12h(clase.hora_fin).replace(' ', '').toLowerCase() : '';
+                const timeDisplay = endTimeStr ? `${startTimeStr} - ${endTimeStr}` : startTimeStr;
                 
                 const className = clase.disciplinas?.nombre || 'Clase';
-                const coachName = clase.coaches?.nombre || 'Ani';
                 
                 const slot = document.createElement('div');
                 slot.className = 'session-slot glass-panel';
                 slot.setAttribute('data-class-id', clase.id);
                 slot.innerHTML = `
-                    <div class="slot-time">
-                        <span class="time-hour">${hour}</span>
-                        <span class="time-ampm">${ampm}</span>
+                    <div class="slot-time" style="min-width: 90px; justify-content: center;">
+                        <span class="time-hour" style="font-size: 0.8rem; font-family: var(--font-sans); letter-spacing: 0;">${timeDisplay}</span>
                     </div>
                     <div class="slot-info">
                         <h4 class="class-name">${className}</h4>
