@@ -108,6 +108,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Control de Menú Hamburguesa en Mobile
+        const btnHamburger = document.getElementById('btn-hamburger');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const sidebar = document.querySelector('.admin-sidebar');
+
+        const toggleSidebar = () => {
+            if (sidebar && sidebarOverlay) {
+                sidebar.classList.toggle('is-open');
+                sidebarOverlay.classList.toggle('is-visible');
+            }
+        };
+
+        const closeSidebar = () => {
+            if (sidebar && sidebarOverlay) {
+                sidebar.classList.remove('is-open');
+                sidebarOverlay.classList.remove('is-visible');
+            }
+        };
+
+        if (btnHamburger && sidebarOverlay) {
+            btnHamburger.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
         // Configurar buscador de clientes en tiempo real
         const searchInput = document.getElementById('input-search-clientes');
         searchInput.addEventListener('input', debounce(() => {
@@ -128,6 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function initTabs() {
         const tabs = document.querySelectorAll('.nav-tab-btn');
         const sections = document.querySelectorAll('.view-section');
+        const sidebar = document.querySelector('.admin-sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
         
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -137,6 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 tab.classList.add('active');
                 const target = tab.getAttribute('data-target');
                 document.getElementById(target).classList.add('active');
+                
+                // En móvil, cerrar el drawer al cambiar de pestaña
+                if (sidebar && sidebarOverlay) {
+                    sidebar.classList.remove('is-open');
+                    sidebarOverlay.classList.remove('is-visible');
+                }
                 
                 loadViewData(target);
             });

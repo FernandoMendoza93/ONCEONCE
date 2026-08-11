@@ -1170,64 +1170,133 @@ input:checked + .switch-slider:before {
 /* ==========================================================================
    8. MEDIA QUERIES (RESPONSIVE)
    ========================================================================== */
+/* Base styles for drawer helpers (invisible on desktop) */
+.hamburger-btn {
+    display: none;
+    background-color: var(--color-bg-stone);
+    border: 1px solid var(--color-border);
+    color: var(--color-gold);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: var(--transition-fast);
+    align-items: center;
+    justify-content: center;
+}
+
+.hamburger-btn:hover {
+    background-color: rgba(255,255,255,0.03);
+    border-color: var(--color-gold);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 998;
+}
+
+.sidebar-overlay.is-visible {
+    display: block;
+}
+
+/* ==========================================================================
+   8. MEDIA QUERIES (RESPONSIVE)
+   ========================================================================== */
 @media(max-width: 991px) {
+    /* En pantallas medianas de tablet/laptop, mantenemos el sidebar visible pero ajustado */
     .admin-sidebar {
-        width: 70px;
-        padding: 2rem 0.5rem;
-        align-items: center;
+        width: 250px;
     }
-    
-    .sidebar-header, .sidebar-logo, .sidebar-subtitle, .user-details, .sidebar-logout-btn span, .nav-tab-btn span {
-        display: none;
-    }
-    
-    .sidebar-header {
-        margin-bottom: 1.5rem;
-    }
-    
-    .sidebar-logo-icon {
-        display: block;
-    }
-    
-    .nav-tab-btn {
-        padding: 0.9rem;
-        justify-content: center;
-        border-radius: 12px;
-    }
-    
-    .nav-icon {
-        opacity: 0.8;
-    }
-    
-    .admin-user-info {
-        justify-content: center;
-        margin-bottom: 0;
-    }
-    
-    .sidebar-footer {
-        border-top: none;
-        padding-top: 0;
-        margin-top: 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
-        align-items: center;
-    }
-    
-    .sidebar-logout-btn {
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        border-radius: 50%;
-    }
-    
     .admin-main {
-        margin-left: 70px;
-        padding: 2.5rem 1.5rem;
+        margin-left: 250px;
     }
 }
 
 @media(max-width: 768px) {
+    /* Menú hamburguesa visible */
+    .hamburger-btn {
+        display: flex;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+    }
+
+    /* El sidebar se oculta para ser un drawer */
+    .admin-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 280px;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.6);
+        align-items: stretch;
+        padding: 2.5rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .admin-sidebar.is-open {
+        transform: translateX(0);
+    }
+
+    /* Restaurar visualización de textos en el sidebar cuando se abre en mobile */
+    .sidebar-header, 
+    .sidebar-logo, 
+    .sidebar-subtitle, 
+    .user-details, 
+    .sidebar-logout-btn span, 
+    .nav-tab-btn span {
+        display: block !important;
+    }
+
+    .admin-user-info {
+        justify-content: flex-start !important;
+        margin-bottom: 1.25rem !important;
+    }
+
+    .sidebar-logout-btn {
+        width: 100% !important;
+        height: auto !important;
+        padding: 0.75rem !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* El contenido principal se expande al 100% */
+    .admin-main {
+        margin-left: 0 !important;
+        padding: 1.5rem 1rem !important;
+        width: 100% !important;
+    }
+
+    /* Dejar espacio libre al inicio para que no lo tape la hamburguesa */
+    .view-header {
+        margin-top: 3.5rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .view-title {
+        font-size: 1.6rem !important;
+    }
+
+    /* Overview KPI cards a una sola columna */
+    .kpi-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
     /* Ocultar grilla semanal completa en móviles */
     #agenda-desktop-grid {
         display: none;
@@ -1297,21 +1366,14 @@ input:checked + .switch-slider:before {
         display: block;
         margin-top: 0.15rem;
     }
-    
-    .kpi-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    
-    .admin-main {
-        padding: 2rem 1rem;
+
+    /* Vista de clientes en una columna */
+    .clients-layout-grid {
+        grid-template-columns: 1fr !important;
     }
 }
 
 @media(max-width: 480px) {
-    .kpi-grid {
-        grid-template-columns: 1fr;
-    }
-    
     .modal-container {
         padding: 1.5rem;
     }

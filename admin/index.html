@@ -24,6 +24,18 @@
     <!-- 2. CONTENIDO PRINCIPAL DEL DASHBOARD (PROTEGIDO) -->
     <div id="admin-content" style="display: none;">
         
+        <!-- Botón Hamburguesa para Mobile -->
+        <button class="hamburger-btn" id="btn-hamburger" aria-label="Abrir menú">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+
+        <!-- Overlay para Sidebar en Mobile -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        
         <!-- SIDEBAR DE NAVEGACIÓN -->
         <aside class="admin-sidebar">
             <div class="sidebar-header">
