@@ -712,21 +712,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             filtered.forEach(clase => {
-                const startTimeStr = formatTime12h(clase.hora_inicio).replace(' ', '').toLowerCase();
-                const endTimeStr = clase.hora_fin ? formatTime12h(clase.hora_fin).replace(' ', '').toLowerCase() : '';
-                const timeDisplay = endTimeStr ? `${startTimeStr} - ${endTimeStr}` : startTimeStr;
+                const formatTimeParts = (time24) => {
+                    if (!time24) return { time: '', ampm: '' };
+                    const parts = time24.split(':');
+                    let hours = parseInt(parts[0]);
+                    const minutes = parts[1];
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12;
+                    const hourStr = hours < 10 ? '0' + hours : hours;
+                    return { time: `${hourStr}:${minutes}`, ampm };
+                };
+
+                const start = formatTimeParts(clase.hora_inicio);
+                const end = clase.hora_fin ? formatTimeParts(clase.hora_fin) : null;
+
+                const hoursDisplay = end ? `${start.time} - ${end.time}` : start.time;
+                const ampmDisplay = end && start.ampm !== end.ampm ? `${start.ampm} - ${end.ampm}` : start.ampm;
                 
                 const className = clase.disciplinas?.nombre || 'Clase';
+                const coachName = clase.coaches?.nombre || 'Coach';
                 
                 const slot = document.createElement('div');
                 slot.className = 'session-slot glass-panel';
                 slot.setAttribute('data-class-id', clase.id);
                 slot.innerHTML = `
-                    <div class="slot-time" style="min-width: 90px; justify-content: center;">
-                        <span class="time-hour" style="font-size: 0.8rem; font-family: var(--font-sans); letter-spacing: 0;">${timeDisplay}</span>
+                    <div class="slot-time" style="min-width: 120px; align-items: center; justify-content: center;">
+                        <span class="time-hour">${hoursDisplay}</span>
+                        <span class="time-ampm">${ampmDisplay}</span>
                     </div>
                     <div class="slot-info">
                         <h4 class="class-name">${className}</h4>
+                        <p class="instructor-name" style="display: none;">Coach: ${coachName}</p>
                         <span class="availability-badge available">Cupo: 0 / ${clase.capacidad_maxima || 5}</span>
                     </div>
                     <div class="slot-action">
