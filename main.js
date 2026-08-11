@@ -804,7 +804,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
                     
-                    const WA_NUMBER = '529513506047';
+                    const WA_NUMBER = '529516410766';
                     const message = `Hola Once:Once. Me interesa la clase de ${claseInfo} con ${coachName}. Para asegurar mi lugar, ¿podrían proporcionarme la cuenta para transferir el 50% de anticipo? 🤍`;
                     const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
                     
