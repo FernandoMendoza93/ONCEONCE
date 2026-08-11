@@ -2585,3 +2585,9 @@ body, html, section, .hero-section, .disciplines-section, .philosophy-section, .
     100% { transform: translate(5vw, -10vh) scale(1.2); opacity: 0.8; }
 }
 
+
+/* === CORRECCION TRANSPARENCIA PARA MESH === */
+body, html, section, .hero-section, .disciplines-section, .philosophy-section, .packages-section, .merch-section, .contact-section, footer.main-footer {
+    background: transparent !important;
+}
+
