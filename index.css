@@ -2448,9 +2448,38 @@ html.lenis, html.lenis body {
 .account-footer-actions {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
     margin-top: 1rem;
     border-top: 1px solid var(--glass-border);
     padding-top: 1.5rem;
+}
+
+#admin-link-container {
+    display: contents;
+}
+
+.admin-dashboard-btn {
+    background-color: #2C4C3B; /* Verde oliva elegante de la marca */
+    border: 1px solid #2C4C3B;
+    color: #FFFDFB;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: var(--transition-fast);
+    text-align: center;
+    line-height: 1; /* Nivelar con el botón de logout */
+}
+
+.admin-dashboard-btn:hover {
+    background-color: #3e6852;
+    border-color: #3e6852;
+    transform: translateY(-1px);
 }
 
 .logout-btn {
@@ -2464,6 +2493,7 @@ html.lenis, html.lenis body {
     border-radius: 10px;
     cursor: pointer;
     transition: var(--transition-fast);
+    line-height: 1; /* Nivelar con el botón de admin */
 }
 
 .logout-btn:hover {

@@ -527,14 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentUserProfile.rol === 'admin') {
             const adminBtn = document.createElement('a');
             adminBtn.href = 'admin/index.html';
-            adminBtn.className = 'buy-cta-btn';
-            adminBtn.style.display = 'block';
-            adminBtn.style.textAlign = 'center';
-            adminBtn.style.marginBottom = '1rem';
-            adminBtn.style.textDecoration = 'none';
-            adminBtn.style.color = '#FFFDFB';
-            adminBtn.style.backgroundColor = '#2C4C3B'; /* Verde oliva elegante de la marca */
-            adminBtn.style.border = '1px solid #2C4C3B';
+            adminBtn.className = 'admin-dashboard-btn';
             adminBtn.innerText = 'IR AL DASHBOARD ADMIN';
             adminLinkContainer.appendChild(adminBtn);
         }
