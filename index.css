@@ -2963,127 +2963,68 @@ footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone
 [data-sileo-viewport] { z-index: 999999 !important; }
 
 
-/* === FONDO MESH ANIMADO === */
-.liquid-background {
+/* === FONDO GRAINY GRADIENT === */
+@property --gradient-position {
+  syntax: '<position>';
+  inherits: false;
+  initial-value: 25% 75%;
+}
+
+:root {
+  --gradient-position: 25% 75%;
+}
+
+.grainy-gradient-bg {
   position: fixed;
   inset: 0;
   z-index: -1;
   overflow: hidden;
-  background-color: #FBF3F0; /* Tinte cálido sutil de base */
-  pointer-events: none;
+  background: radial-gradient(
+    ellipse at var(--gradient-position),
+    #C7DC96 0%,
+    #E4EFD9 40%,
+    #FFFFFF 75%
+  );
+  animation: gradient-drift 20s ease-in-out infinite;
 }
 
-/* Grano / ruido sobre el fondo animado */
-.liquid-background::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    pointer-events: none;
-    z-index: 10;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.12;
-    mix-blend-mode: overlay;
-}
-
-.liquid-blob {
+.grainy-gradient-bg::after {
+  content: '';
   position: absolute;
-  will-change: transform, border-radius;
-  filter: blur(2px); /* blur leve, NO blur pesado tipo glass */
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  animation: grain-shift 0.4s steps(4) infinite;
 }
 
-.liquid-blob--1 {
-  width: 70vw;
-  height: 70vw;
-  top: -20%;
-  left: -15%;
-  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
-  background: 
-    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.9) 0%, transparent 20%),
-    radial-gradient(circle at 75% 20%, #F3AFC0 0%, transparent 70%),
-    radial-gradient(circle at 25% 75%, #C7DC96 0%, transparent 70%),
-    radial-gradient(circle at 75% 75%, #F3AFC0 0%, transparent 75%);
-  animation: morph1 5s ease-in-out infinite, float1 12s ease-in-out infinite;
+@keyframes grain-shift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1%, 1%); }
+  50% { transform: translate(1%, -1%); }
+  75% { transform: translate(-1%, -1%); }
 }
 
-.liquid-blob--2 {
-  width: 65vw;
-  height: 65vw;
-  top: 15%;
-  right: -20%;
-  border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
-  background: 
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.85) 0%, transparent 18%),
-    radial-gradient(circle at 70% 30%, #C7DC96 0%, transparent 70%),
-    radial-gradient(circle at 30% 80%, #F3AFC0 0%, transparent 70%);
-  animation: morph2 6.5s ease-in-out infinite, float2 14s ease-in-out infinite reverse;
-}
-
-.liquid-blob--3 {
-  width: 68vw;
-  height: 68vw;
-  bottom: -25%;
-  left: 5%;
-  border-radius: 50% 50% 35% 65% / 60% 45% 55% 40%;
-  background: 
-    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.85) 0%, transparent 20%),
-    radial-gradient(circle at 75% 25%, #F3AFC0 0%, transparent 70%),
-    radial-gradient(circle at 50% 80%, #C7DC96 0%, transparent 75%);
-  animation: morph3 8s ease-in-out infinite, float3 16s ease-in-out infinite;
-}
-
-/* Morphing: cambia la forma orgánica en el tiempo */
-@keyframes morph1 {
-  0%, 100% { border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%; }
-  50% { border-radius: 65% 35% 40% 60% / 55% 65% 35% 45%; }
-}
-@keyframes morph2 {
-  0%, 100% { border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; }
-  50% { border-radius: 35% 65% 60% 40% / 40% 45% 55% 60%; }
-}
-@keyframes morph3 {
-  0%, 100% { border-radius: 50% 50% 35% 65% / 60% 45% 55% 40%; }
-  50% { border-radius: 40% 60% 55% 45% / 45% 55% 40% 60%; }
-}
-
-/* Movimiento: traslación lenta y suave */
-@keyframes float1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(4vw, 3vh) scale(1.05); }
-}
-@keyframes float2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-3vw, 4vh) scale(1.08); }
-}
-@keyframes float3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(3vw, -3vh) scale(1.03); }
+@keyframes gradient-drift {
+  0%, 100% { --gradient-position: 25% 75%; }
+  50% { --gradient-position: 30% 68%; }
 }
 
 @media (max-width: 768px) {
-    .liquid-blob--1 {
-        width: 110vw;
-        height: 110vw;
-        top: -30%;
-        left: -30%;
-        animation: float1 25s ease-in-out infinite !important;
-    }
-    .liquid-blob--2 {
-        width: 100vw;
-        height: 100vw;
-        top: 20%;
-        right: -35%;
-        animation: float2 28s ease-in-out infinite reverse !important;
-    }
-    .liquid-blob--3 {
-        width: 105vw;
-        height: 105vw;
-        bottom: -35%;
-        left: -10%;
-        animation: float3 30s ease-in-out infinite !important;
-    }
+  .grainy-gradient-bg::after {
+    animation: none;
+  }
+  .grainy-gradient-bg {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grainy-gradient-bg,
+  .grainy-gradient-bg::after {
+    animation: none;
+  }
 }
 
 /* === CORRECCION TRANSPARENCIA PARA MESH === */
