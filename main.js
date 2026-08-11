@@ -154,13 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCloseAccount = document.getElementById('btn-close-account');
     const btnLogout = document.getElementById('btn-logout');
     const panelClient = document.getElementById('panel-client');
-    const panelAdmin = document.getElementById('panel-admin');
+    const adminLinkContainer = document.getElementById('admin-link-container');
     
     const userPhoneSpan = document.getElementById('user-phone');
     const userInjuriesSpan = document.getElementById('user-injuries');
     const accountModalTitle = document.getElementById('account-modal-title');
     const clientBookingsList = document.getElementById('client-bookings-list');
-    const adminBookingsList = document.getElementById('admin-bookings-list');
 
     // Datos estáticos de merchandising para inyectar en el modal
     const merchProductsData = {
@@ -516,19 +515,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         accountModalTitle.innerText = `HOLA, ${currentUserProfile.nombre.toUpperCase()}`;
         
+        // Renderizar el panel cliente por defecto
+        panelClient.classList.remove('hidden');
+        document.getElementById('account-modal-tag').innerText = 'MI CUENTA';
+        userPhoneSpan.innerText = currentUserProfile.telefono || '-';
+        userInjuriesSpan.innerText = currentUserProfile.historial_lesiones || 'Ninguna';
+        await loadClientBookings();
+
+        // Si es admin, inyectar el link al dashboard operativo de forma condicional y segura en el DOM
+        adminLinkContainer.innerHTML = '';
         if (currentUserProfile.rol === 'admin') {
-            panelClient.classList.add('hidden');
-            panelAdmin.classList.remove('hidden');
-            document.getElementById('account-modal-tag').innerText = 'DASHBOARD ADMIN';
-            await loadAdminBookings();
-        } else {
-            panelAdmin.classList.add('hidden');
-            panelClient.classList.remove('hidden');
-            document.getElementById('account-modal-tag').innerText = 'MI CUENTA';
-            
-            userPhoneSpan.innerText = currentUserProfile.telefono || '-';
-            userInjuriesSpan.innerText = currentUserProfile.historial_lesiones || 'Ninguna';
-            await loadClientBookings();
+            const adminBtn = document.createElement('a');
+            adminBtn.href = 'admin/index.html';
+            adminBtn.className = 'buy-cta-btn';
+            adminBtn.style.display = 'block';
+            adminBtn.style.textAlign = 'center';
+            adminBtn.style.marginBottom = '1rem';
+            adminBtn.style.textDecoration = 'none';
+            adminBtn.style.color = '#FFFDFB';
+            adminBtn.style.backgroundColor = '#2C4C3B'; /* Verde oliva elegante de la marca */
+            adminBtn.style.border = '1px solid #2C4C3B';
+            adminBtn.innerText = 'IR AL DASHBOARD ADMIN';
+            adminLinkContainer.appendChild(adminBtn);
         }
     };
 
@@ -585,96 +593,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const loadAdminBookings = async () => {
-        adminBookingsList.innerHTML = '<tr><td colspan="6" class="table-loading">Cargando todas las reservas...</td></tr>';
-        
-        const { data: bookings, error } = await supabase
-            .from('reservas')
-            .select(`
-                id,
-                estatus_pago,
-                fecha,
-                clientes (
-                    nombre,
-                    telefono
-                ),
-                clases (
-                    dia_semana,
-                    hora_inicio,
-                    disciplinas (nombre),
-                    coaches (nombre)
-                )
-            `)
-            .order('created_at', { ascending: false });
-            
-        adminBookingsList.innerHTML = '';
-        
-        if (error) {
-            adminBookingsList.innerHTML = `<tr><td colspan="6" class="table-loading">Error al cargar todas las reservas.</td></tr>`;
-            return;
-        }
-        
-        if (!bookings || bookings.length === 0) {
-            adminBookingsList.innerHTML = `<tr><td colspan="6" class="no-bookings-msg">No hay reservas registradas.</td></tr>`;
-            return;
-        }
-        
-        bookings.forEach(booking => {
-            const cliente = booking.clientes;
-            const clase = booking.clases;
-            if (!cliente || !clase) return;
-            
-            const className = clase.disciplinas?.nombre || 'Clase';
-            const coachName = clase.coaches?.nombre || 'Ani';
-            const formattedTime = formatTime12h(clase.hora_inicio);
-            const dateLabel = booking.fecha ? formatDateSpanish(booking.fecha) : getSpanishDay(clase.dia_semana);
-            
-            const statusClass = booking.estatus_pago === 'Confirmado 50%' ? 'confirmed' : 'pending';
-            const statusLabel = booking.estatus_pago || 'Pendiente';
-            
-            const row = document.createElement('tr');
-            
-            let actionBtnHtml = '';
-            if (booking.estatus_pago !== 'Confirmado 50%') {
-                actionBtnHtml = `<button class="action-confirm-btn" data-reserva-id="${booking.id}">Confirmar</button>`;
-            } else {
-                actionBtnHtml = `<span style="font-size:0.75rem;color:#888;">Listo</span>`;
-            }
-            
-            row.innerHTML = `
-                <td><strong>${cliente.nombre}</strong></td>
-                <td><a href="https://wa.me/52${cliente.telefono}" target="_blank" style="color:var(--color-gold);text-decoration:underline;">${cliente.telefono}</a></td>
-                <td>${className}<br><small>${dateLabel} - ${formattedTime}</small></td>
-                <td>${coachName}</td>
-                <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-                <td>${actionBtnHtml}</td>
-            `;
-            
-            const btnConfirm = row.querySelector('.action-confirm-btn');
-            if (btnConfirm) {
-                btnConfirm.addEventListener('click', async () => {
-                    btnConfirm.innerText = '...';
-                    btnConfirm.disabled = true;
-                    
-                    const { error: updateError } = await supabase
-                        .from('reservas')
-                        .update({ estatus_pago: 'Confirmado 50%' })
-                        .eq('id', booking.id);
-                        
-                    if (updateError) {
-                        alert('Error al actualizar reserva: ' + updateError.message);
-                        btnConfirm.innerText = 'Confirmar';
-                        btnConfirm.disabled = false;
-                    } else {
-                        sileo.success({title: 'Pago Confirmado', description: 'La reserva ha sido confirmada.'});
-                        loadAdminBookings();
-                    }
-                });
-            }
-            
-            adminBookingsList.appendChild(row);
-        });
-    };
 
     // 6. NOTIFICACIONES TOAST (Sileo)
     sileo.init({
@@ -1082,6 +1000,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 currentUserProfile = null;
                 btnProfile.classList.remove('logged-in');
+                
+                // Vaciar contenedor del link admin al cerrar sesión
+                if (adminLinkContainer) {
+                    adminLinkContainer.innerHTML = '';
+                }
                 
                 // Si el modal de cuenta estaba abierto en esta pestaña, lo cerramos
                 if (accountModal.classList.contains('active')) {
