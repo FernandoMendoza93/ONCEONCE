@@ -35,9 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. SEGURIDAD Y CONTROL DE ACCESO (GUARDIA FRONTEND)
     // ==========================================================================
     async function checkAuth() {
+        // Temporizador de seguridad: si Supabase tarda más de 8 segundos, redirigir a Home
+        const timeoutId = setTimeout(() => {
+            console.warn("La autenticación de Supabase tardó demasiado. Redirigiendo por seguridad...");
+            window.location.replace('../index.html');
+        }, 8000);
+
         try {
             const { data: { session }, error: sessionError } = await supabase.auth.getSession();
             if (sessionError || !session) {
+                clearTimeout(timeoutId);
                 window.location.replace('../index.html');
                 return;
             }
@@ -52,10 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 .single();
                 
             if (profileError || !profile || profile.rol !== 'admin') {
+                clearTimeout(timeoutId);
                 window.location.replace('../index.html');
                 return;
             }
             
+            // Éxito: el usuario es admin válido. Limpiar timeout de seguridad.
+            clearTimeout(timeoutId);
+
             currentAdminProfile = profile;
             document.getElementById('display-admin-name').innerText = profile.nombre;
             
@@ -70,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             initDashboard();
             
         } catch (e) {
+            clearTimeout(timeoutId);
             console.error("Auth Guard Catch:", e);
             window.location.replace('../index.html');
         }
