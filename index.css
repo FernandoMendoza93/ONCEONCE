@@ -2809,6 +2809,55 @@ html.lenis, html.lenis body {
     color: var(--color-gold) !important;
 }
 
+/* Reset/Override para glass-panel dentro de modal-container (zona oscura del modal) */
+.modal-container .glass-panel,
+.modal-container .session-slot.glass-panel {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+    color: var(--color-text-light) !important;
+    padding: 1rem 0.75rem !important; /* Respetar padding del slot */
+    border-radius: 16px !important;
+}
+
+@media(min-width: 576px) {
+    .modal-container .glass-panel,
+    .modal-container .session-slot.glass-panel {
+        padding: 1.25rem 1.5rem !important;
+    }
+}
+
+.modal-container .glass-panel .class-name,
+.modal-container .glass-panel .time-hour,
+.modal-container .glass-panel .time-ampm,
+.modal-container .session-slot.glass-panel .class-name,
+.modal-container .session-slot.glass-panel .time-hour,
+.modal-container .session-slot.glass-panel .time-ampm {
+    color: var(--color-text-light) !important;
+}
+
+.modal-container .glass-panel .instructor-name,
+.modal-container .session-slot.glass-panel .instructor-name {
+    color: var(--color-text-muted) !important;
+}
+
+.modal-container .glass-panel .availability-badge.available,
+.modal-container .session-slot.glass-panel .availability-badge.available {
+    color: hsl(142, 60%, 45%) !important;
+}
+
+.modal-container .glass-panel .availability-badge.warning,
+.modal-container .session-slot.glass-panel .availability-badge.warning {
+    color: hsl(38, 85%, 50%) !important;
+}
+
+.modal-container .glass-panel .availability-badge.full,
+.modal-container .session-slot.glass-panel .availability-badge.full {
+    color: hsl(355, 70%, 50%) !important;
+}
+
 /* === CORRECCIÓN CORTE DURO EN TRANSICIONES === */
 .section-dark {
   position: relative;
