@@ -2549,6 +2549,8 @@ body, html, section, .hero-section, .disciplines-section, .philosophy-section, .
     mix-blend-mode: screen;
     will-change: transform;
     opacity: 0.22; /* Controla la intensidad para no quemar el contraste del texto superior */
+    max-width: 1400px;
+    max-height: 1400px;
 }
 
 /* Blob 1: Beige Claro / Arena (Difuminado nativo vía gradiente radial) */
@@ -2623,5 +2625,17 @@ body, html, section, .hero-section, .disciplines-section, .philosophy-section, .
 /* === CORRECCION TRANSPARENCIA PARA MESH === */
 body, html, main, section, .hero-section, .disciplines-section, .philosophy-section, .packages-section, .merch-section, .contact-section, footer.main-footer {
     background: transparent !important;
+}
+
+@media (max-width: 640px) {
+    .blob-1,
+    .blob-4 {
+        display: none;
+    }
+    .blob-2,
+    .blob-3 {
+        width: 220vw;
+        height: 220vw;
+    }
 }
 
