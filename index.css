@@ -756,47 +756,79 @@ html.lenis, html.lenis body {
     margin-bottom: 5rem;
 }
 
-/* Tarjetas de beneficio Glassmorphism */
+/* Tarjetas de beneficio - Patrón de content-card cálido */
 .benefit-card {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(197, 168, 128, 0.15);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    padding: 2.5rem 2rem;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px var(--glass-shadow);
+    padding: 32px 28px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(187, 138, 95, 0.05);
     transition: var(--transition-smooth);
     will-change: transform, opacity;
 }
 
 .benefit-card:hover {
     transform: translate3d(0, -5px, 0);
-    border-color: rgba(197, 168, 128, 0.2);
+    border-color: rgba(197, 168, 128, 0.35);
+    box-shadow: 0 15px 35px rgba(187, 138, 95, 0.08);
 }
 
 .benefit-icon {
     width: 56px;
     height: 56px;
     border-radius: 12px;
-    background-color: hsla(160, 46%, 12%, 0.8);
-    border: 1px solid rgba(197, 168, 128, 0.15);
+    background-color: rgba(199, 220, 150, 0.25); /* Butterfly green translúcido */
+    border: 1px solid rgba(197, 168, 128, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-gold);
+    color: #2C4C3B; /* verde oscuro cálido */
     margin-bottom: 1.5rem;
 }
 
 .benefit-title {
     font-size: 1.25rem;
     margin-bottom: 0.75rem;
-    color: var(--color-text-light);
+    color: #3A3128; /* marrón oscuro cálido, no gris frío */
 }
 
 .benefit-text {
-    color: var(--color-text-muted);
+    color: rgba(58, 49, 40, 0.85); /* marrón oscuro translúcido */
     font-size: 0.85rem;
     line-height: 1.6;
+}
+
+/* Patrón de tarjetas generales de contenido para coherencia del sitio */
+.content-card {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 24px;
+    padding: 32px 28px;
+    border: 1px solid rgba(197, 168, 128, 0.15);
+    color: #3A3128;
+    box-shadow: 0 10px 30px rgba(187, 138, 95, 0.05);
+}
+
+.content-card .card-title {
+    color: #3A3128;
+}
+
+.content-card .card-text {
+    color: rgba(58, 49, 40, 0.85);
+}
+
+.content-card--dark {
+    background: #3A3128; /* marrón oscuro cálido, no gris frío */
+    color: #FFFDFB;
+}
+
+.content-card--dark .card-title {
+    color: var(--color-gold);
+}
+
+.content-card--dark .card-text {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* Bloque Detalle de Estudio */
@@ -944,72 +976,169 @@ html.lenis, html.lenis body {
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(197, 168, 128, 0.15);
+    box-shadow: 0 15px 35px rgba(187, 138, 95, 0.05);
     transition: var(--transition-smooth);
     will-change: transform;
+    color: #3A3128;
 }
 
 .package-card:hover {
     transform: translate3d(0, -8px, 0);
+    box-shadow: 0 20px 45px rgba(187, 138, 95, 0.08);
 }
 
-/* Sapphire Card */
+/* Sapphire Card - Variante Oscura de Contraste */
 .sapphire-card {
-    background: linear-gradient(135deg, #b0946d 0%, #C5A880 100%);
+    background: #3A3128;
     border-color: rgba(197, 168, 128, 0.25);
-    color: #1A1A1A;
+    color: #FFFDFB;
 }
 
 .sapphire-card:hover {
-    border-color: rgba(197, 168, 128, 0.5);
-    box-shadow: 0 20px 45px rgba(197, 168, 128, 0.25);
+    border-color: rgba(197, 168, 128, 0.45);
+    box-shadow: 0 20px 45px rgba(58, 49, 40, 0.2);
 }
 
 .sapphire-card .package-name,
 .sapphire-card .price-amount,
-.sapphire-card .price-currency,
 .sapphire-card .package-features li {
-    color: #1A1A1A;
+    color: #FFFDFB;
 }
 
-.sapphire-card .price-period {
-    color: #4A4A4A;
+.sapphire-card .price-currency {
+    color: var(--color-gold);
+}
+
+.sapphire-card .price-period,
+.sapphire-card .price-sub {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .sapphire-card .package-badge {
-    background-color: rgba(0, 0, 0, 0.05);
-    color: #1A1A1A;
-    border-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-gold);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .sapphire-card .check-icon {
-    color: #1A1A1A;
+    color: var(--color-gold);
 }
 
 .sapphire-card .btn-sapphire {
-    background-color: #1A1A1A;
-    color: #F9F6F0;
-    border-color: #1A1A1A;
+    background-color: var(--color-gold);
+    color: #3A3128;
+    border-color: var(--color-gold);
 }
 
 .sapphire-card .btn-sapphire:hover,
 .sapphire-card .btn-sapphire:active {
     background-color: transparent;
-    color: #1A1A1A;
-    border-color: #1A1A1A;
+    color: var(--color-gold);
+    border-color: var(--color-gold);
 }
 
-/* Emerald Card */
+/* Emerald Card - Variante Clara con Acentos Verdes */
 .emerald-card {
-    background: linear-gradient(135deg, hsl(155, 62%, 7%) 0%, var(--color-emerald) 100%);
-    border-color: rgba(40, 180, 110, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(197, 168, 128, 0.25);
+    color: #3A3128;
 }
 
 .emerald-card:hover {
-    border-color: rgba(40, 180, 110, 0.35);
-    box-shadow: 0 20px 45px rgba(40, 180, 110, 0.15);
+    border-color: rgba(199, 220, 150, 0.5);
+    box-shadow: 0 20px 45px rgba(187, 138, 95, 0.08);
 }
+
+.emerald-card .package-name,
+.emerald-card .price-amount,
+.emerald-card .package-features li {
+    color: #3A3128;
+}
+
+.emerald-card .price-currency {
+    color: #2C4C3B;
+}
+
+.emerald-card .price-period,
+.emerald-card .price-sub {
+    color: rgba(58, 49, 40, 0.7);
+}
+
+.emerald-card .package-badge {
+    background-color: rgba(199, 220, 150, 0.25);
+    color: #2C4C3B;
+    border-color: rgba(199, 220, 150, 0.4);
+}
+
+.emerald-card .check-icon {
+    color: #2C4C3B;
+}
+
+.emerald-card .package-btn {
+    background-color: #2C4C3B;
+    color: #FFFDFB;
+    border-color: #2C4C3B;
+}
+
+.emerald-card .package-btn:hover,
+.emerald-card .package-btn:active {
+    background-color: transparent;
+    color: #2C4C3B;
+    border-color: #2C4C3B;
+}
+
+/* Gold Card - Variante Clara con Acentos Rosas */
+.gold-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(197, 168, 128, 0.25);
+    color: #3A3128;
+}
+
+.gold-card:hover {
+    border-color: rgba(243, 175, 192, 0.5);
+    box-shadow: 0 20px 45px rgba(187, 138, 95, 0.08);
+}
+
+.gold-card .package-name,
+.gold-card .price-amount,
+.gold-card .package-features li {
+    color: #3A3128;
+}
+
+.gold-card .price-currency {
+    color: #C57E8F;
+}
+
+.gold-card .price-period,
+.gold-card .price-sub {
+    color: rgba(58, 49, 40, 0.7);
+}
+
+.gold-card .package-badge {
+    background-color: rgba(243, 175, 192, 0.25);
+    color: #C57E8F;
+    border-color: rgba(243, 175, 192, 0.4);
+}
+
+.gold-card .check-icon {
+    color: #C57E8F;
+}
+
+.gold-card .package-btn {
+    background-color: #C57E8F;
+    color: #FFFDFB;
+    border-color: #C57E8F;
+}
+
+.gold-card .package-btn:hover,
+.gold-card .package-btn:active {
+    background-color: transparent;
+    color: #C57E8F;
+    border-color: #C57E8F;
+}
+
 
 .card-glow {
     position: absolute;
@@ -1478,13 +1607,12 @@ html.lenis, html.lenis body {
     color: var(--color-bg-base);
 }
 
-/* 11. FOOTER */
 .main-footer {
-    background-color: var(--color-bg-base);
-    border-top: 1px solid var(--glass-border);
+    background-color: transparent !important;
+    border-top: 1px solid rgba(197, 168, 128, 0.15) !important;
     padding: 3rem 1.5rem calc(var(--safe-bottom) + 2rem) 1.5rem; /* safe-area bottom para barra de inicio iOS */
     font-size: 0.75rem;
-    color: var(--color-text-muted);
+    color: rgba(58, 49, 40, 0.7) !important;
     text-align: center;
 }
 
@@ -1504,14 +1632,24 @@ html.lenis, html.lenis body {
     }
 }
 
+.footer-copyright {
+    color: rgba(58, 49, 40, 0.7) !important;
+}
+
 .footer-legal {
     display: flex;
     justify-content: center;
     gap: 8px;
+    color: rgba(58, 49, 40, 0.3) !important;
+}
+
+.footer-legal a {
+    color: rgba(58, 49, 40, 0.7) !important;
+    transition: var(--transition-fast);
 }
 
 .footer-legal a:hover {
-    color: var(--color-gold);
+    color: #3A3128 !important;
 }
 
 /* 12. CONTENEDORES MODALES - CRITICAL WebView iOS */
@@ -2561,10 +2699,131 @@ html.lenis, html.lenis body {
 .sileo-viewport { z-index: 99999 !important; }
 
 
-/* Coming Soon Styles */
-.merch-coming-soon { width: 100%; text-align: center; padding: 4rem 1.5rem; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(197, 168, 128, 0.15); margin: 2rem auto; max-width: 800px; }
-.coming-soon-title { font-family: var(--font-primary); color: var(--color-gold); font-size: 1.5rem; letter-spacing: 0.15em; margin-bottom: 1rem; }
-.coming-soon-desc { color: var(--color-text-muted); font-size: 0.95rem; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+/* Coming Soon Styles - Estilo Glass Panel */
+.merch-coming-soon {
+    width: 100%;
+    text-align: center;
+    padding: 48px 40px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(180, 140, 150, 0.12);
+    border-radius: 24px;
+    margin: 2rem auto;
+    max-width: 800px;
+    color: #3A3128;
+}
+.coming-soon-title {
+    font-family: var(--font-primary);
+    color: #BB8A5F;
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+}
+.coming-soon-desc {
+    color: rgba(58, 49, 40, 0.85);
+    font-size: 0.95rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* === SISTEMA DE CONTENCIÓN GLASS PANEL === */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px rgba(180, 140, 150, 0.12);
+  border-radius: 24px;
+  padding: 48px 40px;
+  position: relative;
+  z-index: 1;
+  color: #3A3128;
+}
+
+/* Forzar legibilidad de los textos dentro de un glass-panel claro */
+.glass-panel .section-title,
+.glass-panel .section-description,
+.glass-panel .contact-title,
+.glass-panel .contact-intro,
+.glass-panel .contact-details,
+.glass-panel .contact-item,
+.glass-panel .contact-info,
+.glass-panel h2,
+.glass-panel h4,
+.glass-panel p,
+.glass-panel a,
+.glass-panel .contact-intro p,
+.glass-panel .contact-item p,
+.glass-panel .contact-text h4,
+.glass-panel .contact-text p,
+.glass-panel .contact-link {
+    color: #3A3128 !important;
+}
+
+.glass-panel .section-tag {
+    color: #BB8A5F !important;
+}
+
+/* Estilo de iconos y tabs dentro de un glass-panel para evitar invisibilidad */
+.glass-panel .contact-icon {
+    background-color: rgba(199, 220, 150, 0.25) !important; /* Butterfly green */
+    border-color: rgba(197, 168, 128, 0.3) !important;
+    color: #2C4C3B !important;
+}
+
+.glass-panel .packages-tabs .tab-btn {
+    border-color: rgba(58, 49, 40, 0.25) !important;
+    color: rgba(58, 49, 40, 0.6) !important;
+}
+
+.glass-panel .packages-tabs .tab-btn:hover {
+    border-color: #3A3128 !important;
+    color: #3A3128 !important;
+}
+
+.glass-panel .packages-tabs .tab-btn.active {
+    background-color: #3A3128 !important;
+    border-color: #3A3128 !important;
+    color: #FFFDFB !important;
+}
+
+/* Variante para texto sobre fondos oscuros (ej. sección "RITUAL") */
+.glass-panel--on-dark {
+  background: rgba(20, 24, 20, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  color: var(--color-text-light);
+}
+
+.glass-panel--on-dark .section-title,
+.glass-panel--on-dark .section-description,
+.glass-panel--on-dark h2,
+.glass-panel--on-dark p {
+    color: var(--color-text-light) !important;
+}
+
+.glass-panel--on-dark .section-tag {
+    color: var(--color-gold) !important;
+}
+
+/* === CORRECCIÓN CORTE DURO EN TRANSICIONES === */
+.section-dark {
+  position: relative;
+}
+.section-dark::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, transparent 0%, #FBF3F0 100%);
+  pointer-events: none;
+  z-index: 5;
+}
 
 /* Difuminado de secciones */
 .merch-section { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 20%, var(--color-bg-base) 100%) !important; }
@@ -2588,23 +2847,17 @@ footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone
 
 
 /* === FONDO MESH ANIMADO === */
-body, html, section, .hero-section, .disciplines-section, .philosophy-section, .packages-section, .merch-section, .contact-section, footer.main-footer {
-    background-color: transparent !important;
+.liquid-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background-color: #FBF3F0; /* Tinte cálido sutil de base */
+  pointer-events: none;
 }
 
-.mesh-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1; /* Enviado al fondo absoluto para no entorpecer interacciones */
-    pointer-events: none;
-    overflow: hidden;
-    background-color: var(--color-bg-base); /* Mantiene la base oscura para legibilidad del texto */
-}
-
-.mesh-bg::after {
+/* Grano / ruido sobre el fondo animado */
+.liquid-background::after {
     content: "";
     position: absolute;
     top: -50%;
@@ -2618,122 +2871,106 @@ body, html, section, .hero-section, .disciplines-section, .philosophy-section, .
     mix-blend-mode: overlay;
 }
 
-.blob {
-    position: absolute;
-    /* PROHIBIDO filter: blur() para optimizar GPU y evitar repaints */
-    mix-blend-mode: screen;
-    will-change: transform;
-    max-width: 1400px;
-    max-height: 1400px;
+.liquid-blob {
+  position: absolute;
+  will-change: transform, border-radius;
+  filter: blur(2px); /* blur leve, NO blur pesado tipo glass */
 }
 
-/* Blob 1: Beige Claro / Arena (Difuminado nativo vía gradiente radial) */
-.blob-1 {
-    background: radial-gradient(
-        circle at center,
-        rgba(239, 232, 222, 1) 0%,
-        rgba(239, 232, 222, 1) 45%,
-        rgba(239, 232, 222, 0) 75%
-    );
-    width: 180vw;
-    height: 180vw;
-    top: -50vh;
-    left: -30vw;
-    border-radius: 41% 59% 40% 60% / 55% 45% 55% 45%;
-    animation: float-1 28s infinite ease-in-out alternate;
-    opacity: 0.35; /* crema — acento */
+.liquid-blob--1 {
+  width: 70vw;
+  height: 70vw;
+  top: -20%;
+  left: -15%;
+  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.9) 0%, transparent 20%),
+    radial-gradient(circle at 75% 20%, #F3AFC0 0%, transparent 70%),
+    radial-gradient(circle at 25% 75%, #C7DC96 0%, transparent 70%),
+    radial-gradient(circle at 75% 75%, #F3AFC0 0%, transparent 75%);
+  animation: morph1 5s ease-in-out infinite, float1 12s ease-in-out infinite;
 }
 
-/* Blob 2: Beige Oscuro / Dorado (Difuminado nativo vía gradiente radial) */
-.blob-2 {
-    background: radial-gradient(
-        circle at center,
-        rgba(197, 168, 128, 1) 0%,
-        rgba(197, 168, 128, 1) 45%,
-        rgba(197, 168, 128, 0) 75%
-    );
-    width: 150vw;
-    height: 150vw;
-    bottom: -40vh;
-    right: -30vw;
-    border-radius: 53% 47% 65% 35% / 40% 60% 40% 60%;
-    animation: float-2 22s infinite ease-in-out alternate;
-    opacity: 0.9;  /* dorado — protagonista */
+.liquid-blob--2 {
+  width: 65vw;
+  height: 65vw;
+  top: 15%;
+  right: -20%;
+  border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+  background: 
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.85) 0%, transparent 18%),
+    radial-gradient(circle at 70% 30%, #C7DC96 0%, transparent 70%),
+    radial-gradient(circle at 30% 80%, #F3AFC0 0%, transparent 70%);
+  animation: morph2 6.5s ease-in-out infinite, float2 14s ease-in-out infinite reverse;
 }
 
-/* Blob 3: Verde Elegante / Botánico (Difuminado nativo vía gradiente radial) */
-.blob-3 {
-    background: radial-gradient(
-        circle at center,
-        rgba(31, 77, 54, 1) 0%,
-        rgba(31, 77, 54, 1) 45%,
-        rgba(31, 77, 54, 0) 75%
-    );
-    width: 240vw;
-    height: 240vw;
-    top: -20vh;
-    left: 10vw;
-    border-radius: 35% 65% 50% 50% / 60% 40% 60% 40%;
-    animation: float-3 35s infinite ease-in-out alternate;
-    opacity: 0.7;  /* verde — segunda masa dominante */
+.liquid-blob--3 {
+  width: 68vw;
+  height: 68vw;
+  bottom: -25%;
+  left: 5%;
+  border-radius: 50% 50% 35% 65% / 60% 45% 55% 40%;
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.85) 0%, transparent 20%),
+    radial-gradient(circle at 75% 25%, #F3AFC0 0%, transparent 70%),
+    radial-gradient(circle at 50% 80%, #C7DC96 0%, transparent 75%);
+  animation: morph3 8s ease-in-out infinite, float3 16s ease-in-out infinite;
 }
 
-/* Blob 4: Blanco Puro (Difuminado nativo vía gradiente radial) */
-.blob-4 {
-    background: radial-gradient(
-        circle at center,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(255, 255, 255, 1) 45%,
-        rgba(255, 255, 255, 0) 75%
-    );
-    width: 160vw;
-    height: 160vw;
-    bottom: -10vh;
-    left: -40vw;
-    border-radius: 60% 40% 70% 30% / 50% 50% 50% 50%;
-    animation: float-4 26s infinite ease-in-out alternate;
-    opacity: 0.3;  /* blanco — acento */
+/* Morphing: cambia la forma orgánica en el tiempo */
+@keyframes morph1 {
+  0%, 100% { border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%; }
+  50% { border-radius: 65% 35% 40% 60% / 55% 65% 35% 45%; }
+}
+@keyframes morph2 {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; }
+  50% { border-radius: 35% 65% 60% 40% / 40% 45% 55% 60%; }
+}
+@keyframes morph3 {
+  0%, 100% { border-radius: 50% 50% 35% 65% / 60% 45% 55% 40%; }
+  50% { border-radius: 40% 60% 55% 45% / 45% 55% 40% 60%; }
 }
 
-@keyframes float-1 {
-    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-    50% { transform: translate(45vw, 25vh) rotate(180deg) scale(1.3); }
-    100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+/* Movimiento: traslación lenta y suave */
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(4vw, 3vh) scale(1.05); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-3vw, 4vh) scale(1.08); }
+}
+@keyframes float3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3vw, -3vh) scale(1.03); }
 }
 
-@keyframes float-2 {
-    0% { transform: translate(0, 0) rotate(0deg) scale(1.2); }
-    50% { transform: translate(-50vw, 30vh) rotate(-120deg) scale(0.8); }
-    100% { transform: translate(0, 0) rotate(-360deg) scale(1.2); }
+@media (max-width: 768px) {
+    .liquid-blob--1 {
+        width: 110vw;
+        height: 110vw;
+        top: -30%;
+        left: -30%;
+        animation: float1 25s ease-in-out infinite !important;
+    }
+    .liquid-blob--2 {
+        width: 100vw;
+        height: 100vw;
+        top: 20%;
+        right: -35%;
+        animation: float2 28s ease-in-out infinite reverse !important;
+    }
+    .liquid-blob--3 {
+        width: 105vw;
+        height: 105vw;
+        bottom: -35%;
+        left: -10%;
+        animation: float3 30s ease-in-out infinite !important;
+    }
 }
-
-@keyframes float-3 {
-    0% { transform: translate(0, 0) rotate(0deg) scale(0.9); }
-    50% { transform: translate(35vw, -35vh) rotate(90deg) scale(1.25); }
-    100% { transform: translate(0, 0) rotate(360deg) scale(0.9); }
-}
-
-@keyframes float-4 {
-    0% { transform: translate(0, 0) rotate(0deg) scale(1.1); }
-    50% { transform: translate(-45vw, -25vh) rotate(-90deg) scale(0.75); }
-    100% { transform: translate(0, 0) rotate(-180deg) scale(1.1); }
-}
-
 
 /* === CORRECCION TRANSPARENCIA PARA MESH === */
 body, html, main, section, .hero-section, .disciplines-section, .philosophy-section, .packages-section, .merch-section, .contact-section, footer.main-footer {
     background: transparent !important;
-}
-
-@media (max-width: 640px) {
-    .blob-1,
-    .blob-4 {
-        display: none;
-    }
-    .blob-2,
-    .blob-3 {
-        width: 220vw;
-        height: 220vw;
-    }
 }
 
