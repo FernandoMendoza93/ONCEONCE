@@ -730,7 +730,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="slot-info">
                         <h4 class="class-name">${className}</h4>
-                        <p class="instructor-name">Coach: ${coachName}</p>
                         <span class="availability-badge available">Cupo: 0 / ${clase.capacidad_maxima || 5}</span>
                     </div>
                     <div class="slot-action">

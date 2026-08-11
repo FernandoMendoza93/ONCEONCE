@@ -8,8 +8,8 @@
     /* colores principales */
     --color-bg-base: hsl(160, 46%, 7%);       /* verde bosque profundo #0A1C16 */
     --color-bg-stone: hsl(160, 3%, 11%);       /* piedra oscuro #1B1D1C */
-    --color-gold: hsl(35, 39%, 64%);           /* dorado de alta costura #C5A880 */
-    --color-gold-hover: hsl(35, 45%, 72%);     /* dorado claro */
+    --color-gold: hsl(35, 50%, 78%);           /* dorado mas claro y visible */
+    --color-gold-hover: hsl(35, 55%, 85%);     /* dorado hover */
     --color-text-light: hsl(40, 31%, 96%);     /* blanco roto #F9F6F0 */
     --color-text-muted: hsla(40, 31%, 96%, 0.6); /* texto con opacidad */
     
@@ -616,7 +616,8 @@ html.lenis, html.lenis body {
     width: 100%;
     padding: 0.8rem;
     border: 1px solid var(--color-gold);
-    color: var(--color-gold);
+    background-color: var(--color-gold);
+    color: var(--color-bg-base);
     border-radius: 12px;
     font-size: 0.75rem;
     font-weight: 600;
@@ -628,8 +629,9 @@ html.lenis, html.lenis body {
 }
 
 .discipline-cta-btn:active, .discipline-cta-btn:hover {
-    background-color: var(--color-gold);
-    color: var(--color-bg-base);
+    background-color: var(--color-gold-hover);
+    border-color: var(--color-gold-hover);
+    transform: translateY(-2px);
 }
 
 /* 7. FILOSOFÍA Y BENEFICIOS */
