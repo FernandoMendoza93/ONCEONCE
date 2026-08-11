@@ -2523,7 +2523,8 @@ body, html, section, .hero-section, .disciplines-section, .philosophy-section, .
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -10;
+    z-index: 0;
+    pointer-events: none;
     overflow: hidden;
     background-color: var(--color-bg-base);
 }
@@ -2587,7 +2588,7 @@ body, html, section, .hero-section, .disciplines-section, .philosophy-section, .
 
 
 /* === CORRECCION TRANSPARENCIA PARA MESH === */
-body, html, section, .hero-section, .disciplines-section, .philosophy-section, .packages-section, .merch-section, .contact-section, footer.main-footer {
+body, html, main, section, .hero-section, .disciplines-section, .philosophy-section, .packages-section, .merch-section, .contact-section, footer.main-footer {
     background: transparent !important;
 }
 
