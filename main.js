@@ -1005,6 +1005,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+
+        // 7. CONTROL DE VISIBILIDAD DE CONTRASEÑAS (OJO)
+        const passwordToggles = document.querySelectorAll('.toggle-password-btn');
+        passwordToggles.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault(); // Evitar submit accidental
+                const wrapper = btn.closest('.password-wrapper');
+                if (!wrapper) return;
+                const input = wrapper.querySelector('input');
+                const eyeOpen = btn.querySelector('.eye-open');
+                const eyeClosed = btn.querySelector('.eye-closed');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    eyeOpen.style.display = 'none';
+                    eyeClosed.style.display = 'block';
+                } else {
+                    input.type = 'password';
+                    eyeOpen.style.display = 'block';
+                    eyeClosed.style.display = 'none';
+                }
+            });
+        });
     }
 
 });
