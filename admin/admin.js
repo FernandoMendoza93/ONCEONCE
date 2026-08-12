@@ -256,16 +256,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('kpi-sub-clases').innerText = `${bookedPlaces} / ${totalPlaces} lugares ocupados`;
 
             // 3. KPI: Ocupación de la semana
-            // Obtener reservas de la semana en curso (Lunes a Sábado)
+            // Obtener reservas de la semana en curso (Lunes a Domingo)
             const weekDates = getWeekDates(currentWeekMonday);
             const mondayStr = getLocalDateString(weekDates[0]);
-            const saturdayStr = getLocalDateString(weekDates[5]);
+            const sundayStr = getLocalDateString(weekDates[6]);
             
             const { data: weekBookings, error: weekBookingsError } = await supabase
                 .from('reservas')
                 .select('id')
                 .gte('fecha', mondayStr)
-                .lte('fecha', saturdayStr);
+                .lte('fecha', sundayStr);
 
             const { data: activeClasses, error: activeClassesError } = await supabase
                 .from('clases')
@@ -359,8 +359,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Renderizar la etiqueta de semana seleccionada
             const weekDates = getWeekDates(currentWeekMonday);
             const mondayLabel = formatDateShortSpanish(weekDates[0]);
-            const saturdayLabel = formatDateShortSpanish(weekDates[5]);
-            document.getElementById('label-current-week').innerText = `${mondayLabel} - ${saturdayLabel}`;
+            const sundayLabel = formatDateShortSpanish(weekDates[6]);
+            document.getElementById('label-current-week').innerText = `${mondayLabel} - ${sundayLabel}`;
 
             // Configurar botones de semana
             document.getElementById('btn-prev-week').onclick = () => {
@@ -390,13 +390,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 2. Obtener todas las reservas en este rango de semana
             const mondayStr = getLocalDateString(weekDates[0]);
-            const saturdayStr = getLocalDateString(weekDates[5]);
+            const sundayStr = getLocalDateString(weekDates[6]);
 
             const { data: bookings, error: bookingsError } = await supabase
                 .from('reservas')
                 .select('clase_id, fecha')
                 .gte('fecha', mondayStr)
-                .lte('fecha', saturdayStr);
+                .lte('fecha', sundayStr);
 
             if (bookingsError) throw bookingsError;
 
@@ -452,8 +452,8 @@ document.addEventListener('DOMContentLoaded', () => {
         table.className = 'agenda-table';
 
         // Cabecera: Time | Lunes (Date) ...
-        const daysEnglish = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const daysSpanish = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const daysEnglish = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const daysSpanish = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
         
         let headerRow = '<tr><th class="time-col-header">Horario</th>';
         daysEnglish.forEach((day, index) => {
@@ -532,8 +532,8 @@ document.addEventListener('DOMContentLoaded', () => {
         chipContainer.innerHTML = '';
         listContainer.innerHTML = '';
 
-        const daysEnglish = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const daysSpanishInitials = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
+        const daysEnglish = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const daysSpanishInitials = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
 
         // Renderizar chips de días
         daysEnglish.forEach((day, index) => {
@@ -1052,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getWeekDates(monday) {
         const dates = [];
-        for (let i = 0; i < 6; i++) { // Lunes a Sábado
+        for (let i = 0; i < 7; i++) { // Lunes a Domingo
             const tempDate = new Date(monday);
             tempDate.setDate(monday.getDate() + i);
             dates.push(tempDate);

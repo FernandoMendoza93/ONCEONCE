@@ -812,7 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const baseDate = new Date(today);
         baseDate.setDate(today.getDate() + mondayOffset);
 
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         
         dayButtons.forEach((btn) => {
             const dayCode = btn.getAttribute('data-day');
@@ -854,7 +854,8 @@ document.addEventListener('DOMContentLoaded', () => {
             Wed: "Miércoles",
             Thu: "Jueves",
             Fri: "Viernes",
-            Sat: "Sábado"
+            Sat: "Sábado",
+            Sun: "Domingo"
         };
         return days[day] || day;
     };
