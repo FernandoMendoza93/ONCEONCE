@@ -2981,8 +2981,8 @@ footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone
   overflow: hidden;
   background: radial-gradient(
     ellipse at var(--gradient-position),
-    #7FA84F 0%,
-    #C7DC96 30%,
+    #1F4D36 0%,
+    #C7DC96 35%,
     #FFFFFF 70%
   );
   animation: gradient-drift 20s ease-in-out infinite;
