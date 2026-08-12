@@ -1031,4 +1031,110 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ==========================================================================
+    // 8. MOTOR DE FONDO: AURA CINEMÁTICA (CANVAS ANIMADO)
+    // ==========================================================================
+    const canvas = document.getElementById('backgroundCanvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+
+        const colorDark = { r: 31, g: 77, b: 54 };
+        const colorMid  = { r: 199, g: 220, b: 150 };
+        const colorLight = { r: 255, g: 255, b: 255 };
+        const colorPink  = { r: 243, g: 175, b: 192 };
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        function drawBlobPath(cx, cy, baseSize, time, offset) {
+            const points = 8;
+            ctx.beginPath();
+            for (let i = 0; i < points; i++) {
+                let angle = (i / points) * Math.PI * 2;
+                let r = baseSize;
+                r += Math.sin(angle * 3 + time * 0.001 + offset) * (baseSize * 0.4);
+                r += Math.sin(angle * 2 + time * 0.0008 + offset + 2) * (baseSize * 0.3);
+                r += Math.sin(angle * 4 + time * 0.0015 + offset + 4) * (baseSize * 0.2);
+                
+                let x = cx + Math.cos(angle) * r;
+                let y = cy + Math.sin(angle) * r;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+        }
+
+        function draw(time) {
+            // 1. Fondo base
+            ctx.fillStyle = `rgb(${colorDark.r}, ${colorDark.g}, ${colorDark.b})`;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.filter = 'blur(80px)'; 
+
+            // ==========================================================
+            // LA SOLUCIÓN AL "LAG": DIVISOR DE VELOCIDAD
+            // ==========================================================
+            const slowTime = time / 5;
+
+            // ==========================================================
+            // CAPAS DE FONDO OSCURO
+            // ==========================================================
+            const darkX1 = width * 0.2 + Math.sin(slowTime * 0.0001) * 150; 
+            const darkY1 = height * 0.6 + Math.cos(slowTime * 0.0001) * 100;
+            drawBlobPath(darkX1, darkY1, width * 0.4, slowTime, 10);
+            ctx.fillStyle = `rgba(10, 30, 20, 0.7)`;
+            ctx.fill();
+
+            const darkX2 = width * 0.8 + Math.cos(slowTime * 0.0001 + 5) * 180;
+            const darkY2 = height * 0.3 + Math.sin(slowTime * 0.0001 + 5) * 120;
+            drawBlobPath(darkX2, darkY2, width * 0.35, slowTime, 12);
+            ctx.fillStyle = `rgba(15, 40, 25, 0.6)`;
+            ctx.fill();
+
+            // ==========================================================
+            // CAPAS DE LUZ (Blanco, Verde y Rosa)
+            // ==========================================================
+            const x1 = width * 0.35 + Math.sin(slowTime * 0.0001) * 100; 
+            const y1 = height * 0.45 + Math.cos(slowTime * 0.0001) * 80;
+            const size1 = Math.max(width, height) * 0.2;
+
+            drawBlobPath(x1, y1, size1, slowTime, 0);
+            ctx.fillStyle = `rgba(${colorMid.r}, ${colorMid.g}, ${colorMid.b}, 0.4)`;
+            ctx.fill();
+
+            const x2 = (x1 + 100) + Math.sin(slowTime * 0.0001 + 2) * 80;
+            const y2 = (y1 - 50) + Math.cos(slowTime * 0.0001 + 1) * 60;
+            const size2 = Math.max(width, height) * 0.25;
+
+            drawBlobPath(x2, y2, size2, slowTime, 1.5);
+            ctx.fillStyle = `rgba(${colorLight.r}, ${colorLight.g}, ${colorLight.b}, 0.45)`;
+            ctx.fill();
+
+            const sizePink = size2 * 0.6; 
+            drawBlobPath(x2, y2, sizePink, slowTime, 1.5);
+            ctx.fillStyle = `rgba(${colorPink.r}, ${colorPink.g}, ${colorPink.b}, 0.15)`;
+            ctx.fill();
+
+            const x3 = (x1 - 150) + Math.sin(slowTime * 0.0001 + 3) * 100;
+            const y3 = (y1 + 100) + Math.cos(slowTime * 0.0001 + 4) * 80;
+            const size3 = Math.max(width, height) * 0.15;
+
+            drawBlobPath(x3, y3, size3, slowTime, 3);
+            ctx.fillStyle = `rgba(${colorMid.r}, ${colorMid.g}, ${colorMid.b}, 0.3)`;
+            ctx.fill();
+
+            ctx.filter = 'none';
+
+            requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+    }
+
 });
