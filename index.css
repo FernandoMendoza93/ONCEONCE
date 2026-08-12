@@ -594,8 +594,8 @@ html.lenis, html.lenis body {
 
 @media(min-width: 1024px) {
     .disciplines-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1rem; /* Ajustado para que quepan las 5 disciplinas perfectamente */
     }
 }
 
@@ -980,23 +980,29 @@ html.lenis, html.lenis body {
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(197, 168, 128, 0.15);
-    box-shadow: 0 15px 35px rgba(187, 138, 95, 0.05);
+    background: rgba(255, 255, 255, 0.35); /* Cristal traslúcido leve */
+    backdrop-filter: blur(25px) saturate(120%);
+    -webkit-backdrop-filter: blur(25px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.45); /* Borde de cristal brillante */
+    box-shadow: 0 15px 35px rgba(10, 30, 20, 0.03);
     transition: var(--transition-smooth);
     will-change: transform;
-    color: #3A3128;
+    color: #0A1C16; /* Verde oscuro profundo de la marca para legibilidad extrema */
 }
 
 .package-card:hover {
     transform: translate3d(0, -8px, 0);
-    box-shadow: 0 20px 45px rgba(187, 138, 95, 0.08);
+    box-shadow: 0 20px 45px rgba(10, 30, 20, 0.07);
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.65);
 }
 
 /* Sapphire Card - Variante Oscura de Contraste */
 .sapphire-card {
-    background: #3A3128;
-    border-color: rgba(197, 168, 128, 0.25);
+    background: rgba(10, 28, 22, 0.45); /* Cristal oscuro traslúcido */
+    backdrop-filter: blur(25px) saturate(120%);
+    -webkit-backdrop-filter: blur(25px) saturate(120%);
+    border-color: rgba(255, 255, 255, 0.12);
     color: #FFFDFB;
 }
 
@@ -1045,14 +1051,15 @@ html.lenis, html.lenis body {
 
 /* Emerald Card - Variante Clara con Acentos Verdes */
 .emerald-card {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(197, 168, 128, 0.25);
-    color: #3A3128;
+    background: rgba(255, 255, 255, 0.35); /* Cristal traslúcido leve */
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #0A1C16;
 }
 
 .emerald-card:hover {
-    border-color: rgba(199, 220, 150, 0.5);
-    box-shadow: 0 20px 45px rgba(187, 138, 95, 0.08);
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(199, 220, 150, 0.65);
+    box-shadow: 0 20px 45px rgba(10, 30, 20, 0.07);
 }
 
 .emerald-card .package-name,
@@ -1095,14 +1102,15 @@ html.lenis, html.lenis body {
 
 /* Gold Card - Variante Clara con Acentos Rosas */
 .gold-card {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(197, 168, 128, 0.25);
-    color: #3A3128;
+    background: rgba(255, 255, 255, 0.35); /* Cristal traslúcido leve */
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #0A1C16;
 }
 
 .gold-card:hover {
-    border-color: rgba(243, 175, 192, 0.5);
-    box-shadow: 0 20px 45px rgba(187, 138, 95, 0.08);
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(243, 175, 192, 0.65);
+    box-shadow: 0 20px 45px rgba(10, 30, 20, 0.07);
 }
 
 .gold-card .package-name,
