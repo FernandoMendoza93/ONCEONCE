@@ -449,9 +449,10 @@ html.lenis, html.lenis body {
     position: absolute;
     inset: 0;
     background: linear-gradient(to top,
-        rgba(10, 28, 22, 0.75) 0%,
-        rgba(10, 28, 22, 0.3) 50%,
-        rgba(10, 28, 22, 0.45) 100%
+        rgba(31, 77, 54, 1) 0%,      /* Coincide con el verde botánico base del canvas (#1F4D36) para difuminar el borde */
+        rgba(31, 77, 54, 0.8) 15%,   /* Transición suave */
+        rgba(31, 77, 54, 0) 50%,     /* Centro totalmente transparente para lucir las fotos */
+        rgba(10, 28, 22, 0.55) 100%  /* Header oscuro para legibilidad del menú de navegación */
     );
     z-index: 1;
 }
@@ -1621,10 +1622,10 @@ html.lenis, html.lenis body {
 
 .main-footer {
     background-color: transparent !important;
-    border-top: 1px solid rgba(197, 168, 128, 0.15) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     padding: 3rem 1.5rem calc(var(--safe-bottom) + 2rem) 1.5rem; /* safe-area bottom para barra de inicio iOS */
     font-size: 0.75rem;
-    color: rgba(58, 49, 40, 0.7) !important;
+    color: rgba(255, 255, 255, 0.45) !important;
     text-align: center;
 }
 
@@ -1645,23 +1646,23 @@ html.lenis, html.lenis body {
 }
 
 .footer-copyright {
-    color: rgba(58, 49, 40, 0.7) !important;
+    color: rgba(255, 255, 255, 0.45) !important;
 }
 
 .footer-legal {
     display: flex;
     justify-content: center;
     gap: 8px;
-    color: rgba(58, 49, 40, 0.3) !important;
+    color: rgba(255, 255, 255, 0.25) !important;
 }
 
 .footer-legal a {
-    color: rgba(58, 49, 40, 0.7) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
     transition: var(--transition-fast);
 }
 
 .footer-legal a:hover {
-    color: #3A3128 !important;
+    color: var(--color-gold) !important;
 }
 
 /* 12. CONTENEDORES MODALES - CRITICAL WebView iOS */
@@ -2233,6 +2234,9 @@ html.lenis, html.lenis body {
     transform: translate3d(0, 40px, 0);
     transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
 }
 
 .scroll-reveal.visible {
@@ -2949,7 +2953,7 @@ html.lenis, html.lenis body {
   left: 0;
   right: 0;
   height: 120px;
-  background: linear-gradient(180deg, transparent 0%, #FBF3F0 100%);
+  background: linear-gradient(180deg, transparent 0%, rgb(31, 77, 54) 100%);
   pointer-events: none;
   z-index: 5;
 }
