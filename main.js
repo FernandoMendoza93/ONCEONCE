@@ -949,7 +949,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dateStr) return '';
         const parts = dateStr.split('-');
         const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
-        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        // Usar timeZone: 'UTC' para que toLocaleDateString lea el objeto en el mismo
+        // huso horario (UTC) en el que fue construido, evitando conversiones de zona horaria local.
+        const options = { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' };
         let formatted = date.toLocaleDateString('es-MX', options);
         return formatted.charAt(0).toUpperCase() + formatted.slice(1);
     };

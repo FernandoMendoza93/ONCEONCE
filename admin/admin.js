@@ -1090,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (parts.length !== 3) return dateStr;
         // usar Date.UTC para evitar desajustes horarios
         const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
-        const options = { day: 'numeric', month: 'short' };
+        const options = { day: 'numeric', month: 'short', timeZone: 'UTC' };
         return date.toLocaleDateString('es-ES', options).replace('.', '');
     }
 
