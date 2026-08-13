@@ -3043,8 +3043,8 @@ footer.main-footer {
     height: 100%;
     z-index: -2;
     pointer-events: none;
-    background-color: #0a1c16 !important; /* TEST: Color verde bosque profundo */
-    background-image: none !important;   /* TEST: Sin imagen de fondo */
+    background-color: #030403; /* Color oscuro base para los bordes */
+    background-image: url('./assets/fondo-oficial-estudio.webp');
     background-size: contain; 
     background-position: center;
     background-repeat: no-repeat;
