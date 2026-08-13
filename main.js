@@ -1207,16 +1207,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 8. MOTOR DE FONDO: IMAGEN PARALLAX
+    // 8. MOTOR DE FONDO: IMAGEN PARALLAX (OPTIMIZACIÓN DE COMPOSICIÓN GPU)
     // ==========================================================================
-    const mainBg = document.querySelector('.main-background');
-    if (mainBg) {
+    const mainBgImage = document.querySelector('.main-background-image');
+    if (mainBgImage) {
         let ticking = false;
         window.addEventListener('scroll', () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     const scrollY = window.scrollY;
-                    mainBg.style.backgroundPosition = `center calc(50% + ${Math.sin(scrollY * 0.002) * 15}vh)`;
+                    // Mantener la imagen en el viewport (counteract scrollY) + aplicar el desfase oscilatorio original
+                    const offset = Math.sin(scrollY * 0.002) * (window.innerHeight * 0.15);
+                    const y = scrollY + offset;
+                    mainBgImage.style.transform = `translate3d(0, ${y}px, 0)`;
                     ticking = false;
                 });
                 ticking = true;
