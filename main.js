@@ -682,7 +682,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const bookingDate = activeDayBtn ? activeDayBtn.getAttribute('data-date') : new Date().toISOString().split('T')[0];
                     const formattedDate = formatDateSpanish(bookingDate);
                     
-                    const claseInfo = `${className} - ${formattedDate} ${formattedTime}`;
+                    const timeString = `${hoursDisplay} ${ampmDisplay}`;
+                    const claseInfo = `${className} - ${formattedDate} ${timeString}`;
                     
                     const { data: resData, error: resError } = await supabase
                         .rpc('agendar_clase_atomic', {
