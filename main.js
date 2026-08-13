@@ -394,7 +394,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (error) {
             submitBtn.innerText = 'CREAR CUENTA';
             submitBtn.disabled = false;
-            alert('Error al registrar usuario: ' + error.message);
+            
+            const isAlreadyRegistered = 
+                error.message.toLowerCase().includes('already registered') ||
+                error.message.toLowerCase().includes('already been registered') ||
+                error.message.toLowerCase().includes('user already') ||
+                error.code === 'user_already_exists';
+
+            if (isAlreadyRegistered) {
+                // Redirigir elegantemente al login en lugar de mostrar el error técnico
+                formRegister.classList.add('hidden');
+                formLogin.classList.remove('hidden');
+                authModalTitle.innerText = 'INICIAR SESIÓN';
+                // Pre-rellenar el email en el login para agilizar el proceso
+                const loginEmailInput = formLogin.querySelector('input[type="email"]');
+                if (loginEmailInput) loginEmailInput.value = email;
+                sileo.info({
+                    title: '¡Ya tienes una cuenta! 🤍',
+                    description: 'Este correo ya está registrado. Te redirigimos para que inicies sesión.'
+                });
+            } else {
+                sileo.error({
+                    title: 'Error al crear cuenta',
+                    description: error.message
+                });
+            }
             return;
         }
 
