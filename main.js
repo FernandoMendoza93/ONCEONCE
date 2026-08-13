@@ -534,14 +534,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadClientBookings = async () => {
-        clientBookingsList.innerHTML = '<tr><td colspan="3" class="table-loading">Cargando tus reservas...</td></tr>';
+        const isAdmin = currentUserProfile && currentUserProfile.rol === 'admin';
+        clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">${isAdmin ? 'Cargando agenda global del estudio...' : 'Cargando tus reservas...'}</td></tr>`;
         
-        const { data: bookings, error } = await supabase
+        let query = supabase
             .from('reservas')
             .select(`
                 id,
                 estatus_pago,
                 fecha,
+                clientes (nombre, telefono),
                 clases (
                     dia_semana,
                     hora_inicio,
@@ -549,8 +551,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     coaches (nombre)
                 )
             `)
-            .eq('cliente_id', currentUser.id)
             .order('created_at', { ascending: false });
+
+        if (!isAdmin) {
+            query = query.eq('cliente_id', currentUser.id);
+        } else {
+            query = query.limit(100);
+        }
+        
+        const { data: bookings, error } = await query;
             
         clientBookingsList.innerHTML = '';
         
@@ -560,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (!bookings || bookings.length === 0) {
-            clientBookingsList.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">No tienes reservas activas.</td></tr>`;
+            clientBookingsList.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">${isAdmin ? 'No hay reservas registradas en el sistema todavía.' : 'No tienes reservas activas.'}</td></tr>`;
             return;
         }
         
@@ -570,20 +579,65 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const className = clase.disciplinas?.nombre || 'Clase';
             const coachName = clase.coaches?.nombre || 'Ani';
+            const clientName = booking.clientes?.nombre || 'Usuario';
+            const clientPhone = booking.clientes?.telefono || '';
             const formattedTime = formatTime12h(clase.hora_inicio);
             const dateLabel = booking.fecha ? formatDateSpanish(booking.fecha) : getSpanishDay(clase.dia_semana);
             
-            const statusClass = booking.estatus_pago === 'Confirmado 50%' ? 'confirmed' : 'pending';
+            const isPaid = booking.estatus_pago === 'Confirmado 50%';
+            const statusClass = isPaid ? 'confirmed' : 'pending';
             const statusLabel = booking.estatus_pago || 'Pendiente';
             
             const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><strong>${className}</strong><br><small>${dateLabel} - ${formattedTime}</small></td>
-                <td>${coachName}</td>
-                <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-            `;
+            
+            if (isAdmin) {
+                row.innerHTML = `
+                    <td><strong>${className}</strong><br><small>${dateLabel} - ${formattedTime}</small></td>
+                    <td><strong>${clientName}</strong><br><small><a href="https://wa.me/52${clientPhone}" target="_blank" style="color:var(--color-gold);text-decoration:underline;">${clientPhone}</a></small></td>
+                    <td style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end;">
+                        <span class="status-badge ${statusClass}" style="margin-bottom:0.25rem;">${statusLabel}</span>
+                        <button class="action-btn-agendar btn-authorize-booking" data-id="${booking.id}" data-paid="${isPaid}" style="font-size:0.7rem; padding: 0.4rem 0.6rem; min-width:auto; height:auto; letter-spacing:1px;">
+                            ${isPaid ? 'CANCELAR PAGO' : 'AUTORIZAR PAGO'}
+                        </button>
+                    </td>
+                `;
+            } else {
+                row.innerHTML = `
+                    <td><strong>${className}</strong><br><small>${dateLabel} - ${formattedTime}</small></td>
+                    <td>${coachName}</td>
+                    <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                `;
+            }
             clientBookingsList.appendChild(row);
         });
+
+        if (isAdmin) {
+            const authorizeBtns = clientBookingsList.querySelectorAll('.btn-authorize-booking');
+            authorizeBtns.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const bookingId = e.target.getAttribute('data-id');
+                    const isPaid = e.target.getAttribute('data-paid') === 'true';
+                    const newStatus = isPaid ? 'Pendiente' : 'Confirmado 50%';
+                    
+                    e.target.innerText = 'PROCESANDO...';
+                    e.target.disabled = true;
+                    e.target.style.opacity = '0.5';
+
+                    const { error: updateError } = await supabase
+                        .from('reservas')
+                        .update({ estatus_pago: newStatus })
+                        .eq('id', bookingId);
+                        
+                    if (updateError) {
+                        alert('Error al actualizar estatus: ' + updateError.message);
+                        e.target.innerText = 'ERROR';
+                        return;
+                    }
+                    
+                    loadClientBookings();
+                });
+            });
+        }
     };
 
 
