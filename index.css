@@ -283,10 +283,7 @@ html.lenis, html.lenis body {
         line-height: 18px;
     }
     .nav-text-link {
-        font-size: 0.65rem;
-        padding: 0.4rem 0.65rem;
-        min-height: 32px;
-        line-height: 1;
+        display: none; /* Ocultar PAQUETES en móviles para evitar amontonamiento */
     }
     .header-nav {
         gap: 0.25rem;
