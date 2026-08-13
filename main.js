@@ -351,7 +351,16 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = false;
 
         if (error) {
-            alert('Error al iniciar sesión: ' + error.message);
+            const msg = error.message.toLowerCase();
+            if (msg.includes('invalid login credentials') || msg.includes('invalid credentials')) {
+                sileo.error({ title: 'Credenciales incorrectas', description: 'El correo o la contraseña no son válidos. Verifica tus datos e intenta de nuevo.' });
+            } else if (msg.includes('email not confirmed')) {
+                sileo.warning({ title: 'Confirma tu correo', description: 'Revisa tu bandeja de entrada y confirma tu email antes de iniciar sesión.' });
+            } else if (msg.includes('too many requests')) {
+                sileo.error({ title: 'Demasiados intentos', description: 'Por seguridad, espera unos minutos antes de intentarlo de nuevo.' });
+            } else {
+                sileo.error({ title: 'Error al iniciar sesión', description: error.message });
+            }
         } else {
             closeModal(authModal);
             sileo.success({title: 'Sesión Iniciada', description: 'Bienvenido de vuelta a Once:Once.'});
