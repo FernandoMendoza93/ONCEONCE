@@ -274,35 +274,35 @@ html.lenis, html.lenis body {
 
 @media (max-width: 576px) {
     .header-container {
-        width: 95%; /* Aprovechar más espacio lateral en pantallas chicas */
+        width: 92%; /* Ancho controlado */
     }
     .header-logo-img {
-        height: 20px; /* Logo más compacto en móviles */
+        height: 22px; /* Logo legible y estable a la izquierda */
     }
     .header-nav {
-        flex: 1;
-        justify-content: space-between; /* Distribuye los elementos uniformemente en el espacio disponible */
-        margin-left: 0.5rem; /* Margen de separación con el logo */
-        gap: 0.1rem; /* Gap mínimo de seguridad */
+        /* Removemos flex:1 y space-between para evitar estiramiento artificial */
+        display: flex;
+        align-items: center;
+        gap: 0.45rem; /* Espaciado uniforme y natural entre los 5 botones */
     }
     .nav-cta-btn {
-        padding: 0.35rem 0.55rem;
-        font-size: 0.6rem;
-        min-height: 30px;
-        line-height: 16px;
+        padding: 0.45rem 0.75rem;
+        font-size: 0.65rem;
+        min-height: 34px;
+        line-height: 18px;
         letter-spacing: 0.05em;
     }
     .nav-text-link {
-        display: flex; /* Restaurar botón de PAQUETES */
-        padding: 0.35rem 0.5rem;
-        font-size: 0.6rem;
-        min-height: 30px;
-        line-height: 16px;
+        display: flex;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.65rem;
+        min-height: 34px;
+        line-height: 18px;
         letter-spacing: 0.05em;
     }
     .nav-icon-btn {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
     }
 }
 
