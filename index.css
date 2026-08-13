@@ -3036,15 +3036,15 @@ footer.main-footer {
 
 /* === FONDO AURA CINEMÁTICA CANVAS === */
 .main-background {
-    position: fixed;
+    position: absolute; /* TEST: absolute instead of fixed */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: -2;
     pointer-events: none;
-    background-color: #030403; /* Color oscuro base para los bordes */
-    background-image: url('./assets/fondo-oficial-estudio.webp');
+    background-color: #0a1c16 !important; /* TEST: Color verde bosque profundo */
+    background-image: none !important;   /* TEST: Sin imagen de fondo */
     background-size: contain; 
     background-position: center;
     background-repeat: no-repeat;
