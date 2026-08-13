@@ -3036,6 +3036,7 @@ footer.main-footer {
 
 /* === FONDO AURA CINEMÁTICA CANVAS === */
 .main-background {
+    display: none !important; /* TEST 1: Desactivar temporalmente */
     position: fixed;
     top: 0;
     left: 0;
