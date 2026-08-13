@@ -1212,14 +1212,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainBgImage = document.querySelector('.main-background-image');
     if (mainBgImage) {
         let ticking = false;
+        
+        // Función de posicionamiento reutilizable
+        const updateParallax = () => {
+            const scrollY = window.scrollY;
+            const offset = Math.sin(scrollY * 0.002) * (window.innerHeight * 0.15);
+            const y = scrollY + offset;
+            mainBgImage.style.transform = `translate3d(0, ${y}px, 0)`;
+        };
+
+        // Inicializar de inmediato para evitar pantalla en negro al cargar
+        updateParallax();
+
         window.addEventListener('scroll', () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
-                    const scrollY = window.scrollY;
-                    // Mantener la imagen en el viewport (counteract scrollY) + aplicar el desfase oscilatorio original
-                    const offset = Math.sin(scrollY * 0.002) * (window.innerHeight * 0.15);
-                    const y = scrollY + offset;
-                    mainBgImage.style.transform = `translate3d(0, ${y}px, 0)`;
+                    updateParallax();
                     ticking = false;
                 });
                 ticking = true;

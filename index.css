@@ -3049,7 +3049,10 @@ footer.main-footer {
 
 .main-background-image {
     position: absolute;
-    inset: -15vh 0; /* Margen superior/inferior para contener el desplazamiento del parallax */
+    top: -10vh; /* Centrado relativo al viewport con margen para el parallax */
+    left: 0;
+    width: 100%;
+    height: 120vh; /* Alto fijo relativo al viewport para centrar la imagen en la pantalla inicial */
     background-image: url('./assets/fondo-oficial-estudio.webp');
     background-size: contain; 
     background-position: center;
