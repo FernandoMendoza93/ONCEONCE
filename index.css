@@ -274,35 +274,42 @@ html.lenis, html.lenis body {
 
 @media (max-width: 576px) {
     .header-container {
-        width: 92%; /* Ancho controlado */
-    }
-    .header-logo-img {
-        height: 22px; /* Logo legible y estable a la izquierda */
-    }
-    .header-nav {
-        /* Removemos flex:1 y space-between para evitar estiramiento artificial */
+        width: 94%; /* Ancho óptimo para dar aire a los lados */
         display: flex;
+        justify-content: space-between; /* Distribuye los 6 elementos de forma totalmente uniforme */
         align-items: center;
-        gap: 0.45rem; /* Espaciado uniforme y natural entre los 5 botones */
     }
+    
+    /* Promover todos los elementos hijos (Logo + 5 botones) al contenedor principal */
+    .header-logo, 
+    .header-nav {
+        display: contents;
+    }
+    
+    .header-logo-img {
+        height: 20px; /* Logo sutil y del mismo peso visual que el resto */
+    }
+    
     .nav-cta-btn {
-        padding: 0.45rem 0.75rem;
-        font-size: 0.65rem;
-        min-height: 34px;
-        line-height: 18px;
+        padding: 0.4rem 0.65rem;
+        font-size: 0.62rem;
+        min-height: 32px;
+        line-height: 16px;
         letter-spacing: 0.05em;
     }
+    
     .nav-text-link {
         display: flex;
-        padding: 0.45rem 0.65rem;
-        font-size: 0.65rem;
-        min-height: 34px;
-        line-height: 18px;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.62rem;
+        min-height: 32px;
+        line-height: 16px;
         letter-spacing: 0.05em;
     }
+    
     .nav-icon-btn {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
     }
 }
 
