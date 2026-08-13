@@ -682,6 +682,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Helper: obtiene la hora actual en México (CST / UTC-6) de forma precisa
+    // Funciona aunque el dispositivo del usuario esté en otro timezone
+    const getMexicoNow = () => {
+        const nowMx = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Mexico_City' }));
+        return nowMx;
+    };
+
     // Renderizado dinámico de la agenda
     const renderSessions = () => {
         const activeTabEl = document.querySelector('.booking-tab-btn.active');
@@ -708,6 +715,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 listContainer.innerHTML = '<p class="no-sessions">No hay clases programadas para este día.</p>';
                 return;
             }
+
+            // Detectar si el día activo es HOY para ocultar clases que ya pasaron
+            const nowMx = getMexicoNow();
+            const todayDateStr = `${nowMx.getFullYear()}-${String(nowMx.getMonth()+1).padStart(2,'0')}-${String(nowMx.getDate()).padStart(2,'0')}`;
+            const activeDateStr = activeDayEl.getAttribute('data-date') || '';
+            const isToday = activeDateStr === todayDateStr;
+            // Hora actual en México como número comparable: HHMM
+            const nowHHMM = nowMx.getHours() * 100 + nowMx.getMinutes();
             
             filtered.forEach(clase => {
                 const formatTimeParts = (time24) => {
@@ -730,9 +745,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const className = clase.disciplinas?.nombre || 'Clase';
                 const coachName = clase.coaches?.nombre || 'Coach';
+
+                // Calcular si esta clase ya pasó (solo aplica si el día seleccionado es hoy)
+                let isPastClass = false;
+                if (isToday && clase.hora_inicio) {
+                    const [hh, mm] = clase.hora_inicio.split(':').map(Number);
+                    const classHHMM = hh * 100 + mm;
+                    isPastClass = classHHMM < nowHHMM;
+                }
                 
                 const slot = document.createElement('div');
-                slot.className = 'session-slot glass-panel';
+                slot.className = `session-slot glass-panel${isPastClass ? ' past-class' : ''}`;
                 slot.setAttribute('data-class-id', clase.id);
                 slot.innerHTML = `
                     <div class="slot-time" style="min-width: 120px; align-items: center; justify-content: center;">
@@ -742,10 +765,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="slot-info">
                         <h4 class="class-name">${className}</h4>
                         <p class="instructor-name" style="display: none;">Coach: ${coachName}</p>
-                        <span class="availability-badge available">Cupo: 0 / ${clase.capacidad_maxima || 5}</span>
+                        <span class="availability-badge ${isPastClass ? 'past' : 'available'}">${isPastClass ? 'Clase finalizada' : `Cupo: 0 / ${clase.capacidad_maxima || 5}`}</span>
                     </div>
                     <div class="slot-action">
-                        <button class="action-btn-agendar">AGENDAR</button>
+                        <button class="action-btn-agendar${isPastClass ? ' disabled' : ''}" ${isPastClass ? 'disabled' : ''}>${isPastClass ? 'NO DISPONIBLE' : 'AGENDAR'}</button>
                     </div>
                 `;
                 

@@ -1974,6 +1974,11 @@ html.lenis, html.lenis body {
     color: hsl(355, 70%, 50%);
 }
 
+.availability-badge.past {
+    color: hsla(0, 0%, 100%, 0.3);
+    font-style: italic;
+}
+
 .action-btn-agendar {
     font-size: 0.7rem;
     font-weight: 700;
@@ -2005,6 +2010,28 @@ html.lenis, html.lenis body {
     border: 1px solid var(--glass-border);
     color: var(--color-text-muted) !important;
     cursor: not-allowed;
+}
+
+/* Clase horario pasado (ya no disponible hoy) */
+.session-slot.past-class {
+    opacity: 0.45;
+    filter: grayscale(0.4);
+    pointer-events: none; /* bloquea cualquier interacción */
+    position: relative;
+}
+.session-slot.past-class::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 8px,
+        hsla(0, 0%, 0%, 0.06) 8px,
+        hsla(0, 0%, 0%, 0.06) 9px
+    );
+    pointer-events: none;
 }
 
 /* 13. COMPRA MERCH MODAL DESIGN */
