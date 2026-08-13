@@ -406,6 +406,8 @@ html.lenis, html.lenis body {
     position: absolute;
     inset: 0;
     z-index: 0; /* Ya no necesita ser negativo: isolation lo contiene */
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
 }
 
 .hero-carousel-container {
@@ -449,10 +451,10 @@ html.lenis, html.lenis body {
     position: absolute;
     inset: 0;
     background: linear-gradient(to top,
-        rgba(31, 77, 54, 1) 0%,      /* Coincide con el verde botánico base del canvas (#1F4D36) para difuminar el borde */
-        rgba(31, 77, 54, 0.8) 15%,   /* Transición suave */
-        rgba(31, 77, 54, 0) 50%,     /* Centro totalmente transparente para lucir las fotos */
-        rgba(10, 28, 22, 0.55) 100%  /* Header oscuro para legibilidad del menú de navegación */
+        rgba(3, 4, 3, 0.1) 0%,         /* Casi transparente abajo para dejar brillar la luz verde */
+        rgba(3, 4, 3, 0) 30%,        /* Centro transparente para lucir las fotos */
+        rgba(3, 4, 3, 0) 60%,        /* Centro transparente para lucir las fotos */
+        rgba(3, 4, 3, 0.6) 100%      /* Header oscuro para legibilidad del menú */
     );
     z-index: 1;
 }
@@ -2953,22 +2955,20 @@ html.lenis, html.lenis body {
   left: 0;
   right: 0;
   height: 120px;
-  background: linear-gradient(180deg, transparent 0%, rgb(31, 77, 54) 100%);
+  background: linear-gradient(180deg, transparent 0%, transparent 100%);
   pointer-events: none;
   z-index: 5;
 }
 
-/* Difuminado de secciones */
-.merch-section { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 20%, var(--color-bg-base) 100%) !important; }
-
-
-/* === TRANSICIONES DIFUMINADAS DE SECCIONES === */
-.disciplines-section { background: linear-gradient(to bottom, rgba(30, 30, 30, 0) 0%, var(--color-bg-stone) 10%, var(--color-bg-stone) 100%) !important; }
-.philosophy-section { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 15%, var(--color-bg-base) 100%) !important; }
-.packages-section { background: linear-gradient(to bottom, var(--color-bg-base) 0%, var(--color-bg-stone) 15%, var(--color-bg-stone) 100%) !important; }
-.merch-section { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 15%, var(--color-bg-base) 100%) !important; }
-.contact-section { background: linear-gradient(to bottom, var(--color-bg-base) 0%, var(--color-bg-stone) 15%, var(--color-bg-stone) 100%) !important; }
-footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone) 0%, var(--color-bg-base) 15%, var(--color-bg-base) 100%) !important; }
+/* === FONDOS TRANSPARENTES PARA DEJAR VER EL PARALLAX === */
+.disciplines-section, 
+.philosophy-section, 
+.packages-section, 
+.merch-section, 
+.contact-section, 
+footer.main-footer { 
+    background: transparent !important; 
+}
 
 
 /* === REMOVER BORDES BLANCOS ENTRE SECCIONES === */
@@ -2980,7 +2980,7 @@ footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone
 
 
 /* === FONDO AURA CINEMÁTICA CANVAS === */
-#backgroundCanvas {
+.main-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -2988,6 +2988,35 @@ footer.main-footer { background: linear-gradient(to bottom, var(--color-bg-stone
     height: 100%;
     z-index: -2;
     pointer-events: none;
+    background-color: #030403; /* Color oscuro base para los bordes */
+    background-image: url('./assets/fondo-oficial-estudio.webp');
+    background-size: contain; 
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    /* Eliminamos la máscara aquí para usar un ::after más preciso en los laterales */
+}
+
+/* Capa superpuesta para difuminar perfectamente los bordes rectos de la imagen (laterales y top/bottom) */
+.main-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(90deg, #030403 0%, #030403 10%, transparent 45%),
+        linear-gradient(-90deg, #030403 0%, #030403 10%, transparent 45%),
+        linear-gradient(180deg, #030403 0%, transparent 15%),
+        linear-gradient(0deg, #030403 0%, transparent 15%);
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .main-background {
+        background-size: 130% 130%; /* Da holgura (slack) para que el parallax respire sin mostrar cortes */
+    }
 }
 
 .grain-overlay {
