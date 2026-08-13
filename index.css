@@ -1892,6 +1892,18 @@ html.lenis, html.lenis body {
     color: var(--color-bg-base);
 }
 
+/* Días pasados de la semana — bloqueados visualmente */
+.week-day-btn.day-past {
+    opacity: 0.3;
+    cursor: not-allowed;
+    filter: grayscale(1);
+    pointer-events: none;
+}
+.week-day-btn.day-past .day-name,
+.week-day-btn.day-past .day-num {
+    color: var(--color-text-muted);
+}
+
 .sessions-list {
     display: flex;
     flex-direction: column;

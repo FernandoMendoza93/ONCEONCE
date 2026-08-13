@@ -862,6 +862,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const maxCap = clase.capacidad_maxima || 5;
                                 const slotEl = listContainer.querySelector(`[data-class-id="${clase.id}"]`);
                                 if (slotEl) {
+                                    // Si el slot es de clase pasada, no sobrescribir su estilo
+                                    if (slotEl.classList.contains('past-class')) return;
+
                                     const badge = slotEl.querySelector('.availability-badge');
                                     const btn = slotEl.querySelector('.action-btn-agendar');
                                     
@@ -915,36 +918,55 @@ document.addEventListener('DOMContentLoaded', () => {
         const dayButtons = document.querySelectorAll('.week-day-btn');
         if (dayButtons.length === 0) return;
 
-        const today = new Date();
-        const currentDay = today.getDay(); // 0: Dom, 1: Lun, ...
-        
-        // Si hoy es domingo (0), cargamos la semana que viene. Si no, cargamos la semana actual.
-        const mondayOffset = currentDay === 0 ? 1 : 1 - currentDay;
-        const baseDate = new Date(today);
-        baseDate.setDate(today.getDate() + mondayOffset);
+        // Usar siempre la hora de México para comparaciones de fecha
+        const nowMx = getMexicoNow();
+        const todayDateStr = `${nowMx.getFullYear()}-${String(nowMx.getMonth()+1).padStart(2,'0')}-${String(nowMx.getDate()).padStart(2,'0')}`;
+
+        const currentDayMx = nowMx.getDay(); // 0=Dom, 1=Lun, ...
+
+        // Si hoy es domingo (0), mostramos la próxima semana. Si no, mostramos la semana actual.
+        const mondayOffset = currentDayMx === 0 ? 1 : 1 - currentDayMx;
+        const baseDate = new Date(nowMx);
+        baseDate.setDate(nowMx.getDate() + mondayOffset);
 
         const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        
+
+        let todayBtn = null;
+
         dayButtons.forEach((btn) => {
             const dayCode = btn.getAttribute('data-day');
             const dayIdx = days.indexOf(dayCode);
             if (dayIdx !== -1) {
                 const targetDate = new Date(baseDate);
                 targetDate.setDate(baseDate.getDate() + dayIdx);
-                
+
                 const year = targetDate.getFullYear();
                 const month = String(targetDate.getMonth() + 1).padStart(2, '0');
                 const dateNum = String(targetDate.getDate()).padStart(2, '0');
                 const fullDateStr = `${year}-${month}-${dateNum}`;
-                
+
                 btn.setAttribute('data-date', fullDateStr);
-                
+
                 const numEl = btn.querySelector('.day-num');
-                if (numEl) {
-                    numEl.innerText = dateNum;
+                if (numEl) numEl.innerText = dateNum;
+
+                // Bloquear días estrictamente anteriores a hoy
+                if (fullDateStr < todayDateStr) {
+                    btn.disabled = true;
+                    btn.classList.add('day-past');
+                    btn.setAttribute('title', 'Fecha pasada');
+                } else if (fullDateStr === todayDateStr) {
+                    todayBtn = btn;
                 }
             }
         });
+
+        // Activar HOY por defecto (si existe en la semana visible)
+        // Si hoy es domingo cargamos la semana siguiente y no hay "today" visible
+        if (todayBtn) {
+            dayButtons.forEach(b => b.classList.remove('active'));
+            todayBtn.classList.add('active');
+        }
     };
 
     const formatTime12h = (time24) => {
