@@ -177,21 +177,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Timer de auto-refresco para el modal de agenda (cada 60s)
+    let bookingRefreshInterval = null;
+
     // Funciones genéricas de modales
     const openModal = (modalEl) => {
         modalEl.classList.add('active');
-        if (lenis) lenis.stop(); // Pausa scroll de fondo para optimizar WebView
+        if (lenis) lenis.stop();
         modalEl.setAttribute('aria-hidden', 'false');
-        
+
         if (modalEl === bookingModal) {
             renderSessions();
+            // Iniciar refresco automático: cada 60s recalcula horas pasadas
+            if (!bookingRefreshInterval) {
+                bookingRefreshInterval = setInterval(() => {
+                    if (bookingModal.classList.contains('active')) {
+                        renderSessions();
+                    }
+                }, 60000); // 60 segundos
+            }
         }
     };
 
     const closeModal = (modalEl) => {
         modalEl.classList.remove('active');
-        if (lenis) lenis.start(); // Reanuda scroll
+        if (lenis) lenis.start();
         modalEl.setAttribute('aria-hidden', 'true');
+
+        // Cancelar el timer de refresco al cerrar el modal de agenda
+        if (modalEl === bookingModal && bookingRefreshInterval) {
+            clearInterval(bookingRefreshInterval);
+            bookingRefreshInterval = null;
+        }
     };
 
     // Listeners del Calendario de Reservas
@@ -683,10 +700,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Helper: obtiene la hora actual en México (CST / UTC-6) de forma precisa
-    // Funciona aunque el dispositivo del usuario esté en otro timezone
+    // Usa Intl.DateTimeFormat.formatToParts() — evita el round-trip de string
+    // que falla en Safari/iOS WebView (toLocaleString → new Date() puede dar Invalid Date)
     const getMexicoNow = () => {
-        const nowMx = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Mexico_City' }));
-        return nowMx;
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/Mexico_City',
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: false
+        }).formatToParts(new Date());
+
+        const get = (type) => parseInt(parts.find(p => p.type === type)?.value || '0');
+
+        // Construir Date directamente desde las partes — sin parseo de string intermedio
+        return new Date(
+            get('year'),
+            get('month') - 1, // los meses en JS son 0-indexed
+            get('day'),
+            get('hour') === 24 ? 0 : get('hour'), // algunos browsers usan 24 para medianoche
+            get('minute'),
+            get('second')
+        );
     };
 
     // Renderizado dinámico de la agenda
@@ -811,6 +845,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             sileo.error({title: "CUPO AGOTADO", description: "Lo sentimos, el último lugar para esta clase acaba de ser reservado. Por favor, selecciona otro horario."});
                         } else if (resError.message.includes('RESERVA_DUPLICADA')) {
                             sileo.warning({title: "RESERVA ACTIVA", description: "Ya cuentas con una reserva para esta clase. Te esperamos en el estudio."});
+                        } else if (resError.message.includes('FECHA_PASADA')) {
+                            sileo.error({title: "Fecha no disponible", description: "No es posible reservar en una fecha que ya pasó. Por favor selecciona un día disponible."});
+                            renderSessions(); // refrescar la vista para bloquear visualmente
+                        } else if (resError.message.includes('HORA_PASADA')) {
+                            sileo.error({title: "Horario ya finalizado", description: "Esta clase ya inició. Por favor selecciona otro horario disponible."});
+                            renderSessions(); // refrescar la vista para bloquear visualmente
                         } else if (resError.message.includes('SESION_EXPIRADA')) {
                             closeModal(bookingModal);
                             sileo.error({title: "SESIÓN CADUCADA", description: "Tu sesión ha caducado. Ingresa nuevamente para reservar."});
@@ -821,7 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else if (resError.message.includes('CLASE_NO_ENCONTRADA')) {
                             sileo.error({title: "HORARIO NO DISPONIBLE", description: "Esta clase ya no se encuentra activa en el horario. Por favor refresca la página."});
                         } else {
-                            alert("Hubo un problema procesando tu reserva: " + resError.message);
+                            sileo.error({title: "Error al reservar", description: resError.message});
                         }
                         return;
                     }
