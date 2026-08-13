@@ -1036,12 +1036,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     const mainBg = document.querySelector('.main-background');
     if (mainBg) {
+        let ticking = false;
         window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            // Parallax Respiratorio (Floating): La imagen oscila suavemente arriba y abajo con el scroll
-            // Usamos Math.sin para que el movimiento sea fluido y nunca se salga de la pantalla
-            mainBg.style.backgroundPosition = `center calc(50% + ${Math.sin(scrollY * 0.002) * 15}vh)`;
-        });
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    mainBg.style.backgroundPosition = `center calc(50% + ${Math.sin(scrollY * 0.002) * 15}vh)`;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
     }
 
 });

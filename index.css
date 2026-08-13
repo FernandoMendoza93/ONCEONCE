@@ -2994,6 +2994,10 @@ footer.main-footer {
     background-position: center;
     background-repeat: no-repeat;
     
+    /* === OPTIMIZACIÓN DE RENDIMIENTO (GPU) === */
+    will-change: background-position;
+    transform: translateZ(0);
+    
     /* Eliminamos la máscara aquí para usar un ::after más preciso en los laterales */
 }
 
@@ -3030,6 +3034,10 @@ footer.main-footer {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     mix-blend-mode: overlay;
     z-index: -1;
+    
+    /* === OPTIMIZACIÓN DE RENDIMIENTO (GPU) === */
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 /* === CORRECCION TRANSPARENCIA PARA MESH === */
