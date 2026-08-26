@@ -582,10 +582,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const loadClientBookings = async () => {
+    const loadClientBookings = async (selectedDate = null) => {
         const isAdmin = currentUserProfile && currentUserProfile.rol === 'admin';
         
-        // 1. Obtener fecha del servidor (evita problemas de zona horaria)
+        // --- 1. Obtener fecha del servidor ---
         let todayStr;
         try {
             const { data: latest, error: dateError } = await supabase
@@ -603,31 +603,225 @@ document.addEventListener('DOMContentLoaded', () => {
             todayStr = new Date().toISOString().split('T')[0];
         }
 
-        // 2. Configurar UI según el rol
+        // Fecha a filtrar (si no se seleccionó, usa hoy)
+        // Check if selectedDate is an event object (from a caller that passed `e`)
+        if (selectedDate && typeof selectedDate !== 'string') selectedDate = null;
+        const filterDate = selectedDate || todayStr;
+
+        // --- 2. Configurar UI según rol ---
         const accountModalTag = document.getElementById('account-modal-tag');
         const summarySection = document.querySelector('.user-profile-summary');
-        const sectionTitle = document.querySelector('.panel-section-title');
+        const sectionTitle = document.getElementById('admin-agenda-title');
         const theadTr = document.querySelector('.account-table thead tr');
 
         if (isAdmin) {
+            // --- VISTA ADMIN ---
             accountModalTag.innerText = 'ADMINISTRACIÓN';
             accountModalTitle.innerText = 'PANEL DE CONTROL';
             if (summarySection) summarySection.style.display = 'none';
-            if (sectionTitle) sectionTitle.innerText = 'AGENDA ACTUAL (HOY Y PRÓXIMOS DÍAS)';
-            if (theadTr) theadTr.innerHTML = '<th>Clase / Fecha</th><th>Cliente</th><th>Acción</th>';
-        } else {
-            accountModalTag.innerText = 'MI CUENTA';
-            accountModalTitle.innerText = `HOLA, ${currentUserProfile.nombre.toUpperCase()}`;
-            if (summarySection) summarySection.style.display = 'block';
-            if (sectionTitle) sectionTitle.innerText = 'MIS RESERVAS';
-            if (theadTr) theadTr.innerHTML = '<th>Clase</th><th>Coach</th><th>Estado</th>';
-            userPhoneSpan.innerText = currentUserProfile.telefono || '-';
-            userInjuriesSpan.innerText = currentUserProfile.historial_lesiones || 'Ninguna';
+            
+            // --- TÍTULO DINÁMICO ---
+            const today = new Date(todayStr);
+            const selected = new Date(filterDate);
+            // Fix timezone issue for difference calculation
+            today.setUTCHours(12,0,0,0);
+            selected.setUTCHours(12,0,0,0);
+            
+            let titleText = 'AGENDA';
+            if (filterDate === todayStr) {
+                titleText = 'AGENDA - HOY';
+            } else {
+                const diffDays = Math.round((selected - today) / (1000 * 60 * 60 * 24));
+                if (diffDays === 1) titleText = 'AGENDA - MAÑANA';
+                else if (diffDays === -1) titleText = 'AGENDA - AYER';
+                else titleText = `AGENDA - ${formatDateSpanish(filterDate).toUpperCase()}`;
+            }
+            
+            if (sectionTitle) sectionTitle.innerText = titleText;
+
+            // --- SELECTOR DE FECHA ---
+            const filterContainer = document.getElementById('admin-date-filter-container');
+            if (filterContainer) {
+                if (!document.getElementById('admin-date-picker')) {
+                    filterContainer.innerHTML = `
+                        <input type="date" id="admin-date-picker" class="admin-date-input" value="${filterDate}">
+                    `;
+                    document.getElementById('admin-date-picker').addEventListener('change', (e) => {
+                        loadClientBookings(e.target.value);
+                    });
+                } else {
+                    document.getElementById('admin-date-picker').value = filterDate;
+                }
+            }
+
+            // --- CABECERA DE TABLA ---
+            if (theadTr) {
+                theadTr.innerHTML = '<th>Clase / Fecha</th><th>Cliente</th><th>Acción</th>';
+            }
+
+            clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">Cargando agenda de la fecha...</td></tr>`;
+
+            // --- 3. CONSULTA A SUPABASE (FILTRO EXACTO) ---
+            let query = supabase
+                .from('reservas')
+                .select(`
+                    id,
+                    estatus_pago,
+                    fecha,
+                    created_at,
+                    clientes (nombre, telefono),
+                    clases (
+                        dia_semana,
+                        hora_inicio,
+                        disciplinas (nombre),
+                        coaches (nombre)
+                    )
+                `)
+                .eq('fecha', filterDate)
+                .limit(100);
+
+            const { data: bookingsArray, error } = await query;
+            let bookings = bookingsArray || [];
+
+            // --- 4. RESUMEN DEL DÍA ---
+            const summaryEl = document.getElementById('admin-agenda-summary');
+            if (summaryEl) {
+                if (error) {
+                    summaryEl.innerText = '⚠️ Error al cargar';
+                } else if (!bookings || bookings.length === 0) {
+                    summaryEl.innerText = '📭 Sin reservas este día';
+                } else {
+                    const total = bookings.length;
+                    const pendientes = bookings.filter(b => b.estatus_pago !== 'Confirmado 50%').length;
+                    const clasesUnicas = [...new Set(bookings.map(b => b.clases?.disciplinas?.nombre || 'Clase'))];
+                    summaryEl.innerText = `📊 ${clasesUnicas.length} clases • ${total} reservas • ${pendientes} pendientes`;
+                }
+            }
+
+            // --- 5. RENDERIZAR TABLA ---
+            const tbody = document.getElementById('client-bookings-list');
+            tbody.innerHTML = '';
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="3" class="table-loading">Error: ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (!bookings || bookings.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">No hay reservas para este día.</td></tr>`;
+                return;
+            }
+
+            // Ordenar por hora
+            bookings.sort((a, b) => {
+                if (a.clases?.hora_inicio && b.clases?.hora_inicio) {
+                    return a.clases.hora_inicio.localeCompare(b.clases.hora_inicio);
+                }
+                return 0;
+            });
+
+            bookings.forEach(booking => {
+                const clase = booking.clases;
+                if (!clase) return;
+
+                const className = clase.disciplinas?.nombre || 'Clase';
+                const clientName = booking.clientes?.nombre || 'Usuario';
+                const clientPhone = booking.clientes?.telefono || '';
+                const formattedTime = formatTime12h(clase.hora_inicio);
+                const dateLabel = booking.fecha ? formatDateSpanish(booking.fecha) : '';
+
+                const isPaid = booking.estatus_pago === 'Confirmado 50%';
+                const statusClass = isPaid ? 'confirmed' : 'pending';
+                const statusLabel = booking.estatus_pago || 'Pendiente';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <strong>${className}</strong><br>
+                        <small>${dateLabel} - ${formattedTime}</small>
+                    </td>
+                    <td>
+                        <strong>${clientName}</strong><br>
+                        <small>
+                            <a href="https://wa.me/52${clientPhone}" 
+                               target="_blank" 
+                               style="color:var(--color-gold);text-decoration:underline;">
+                                ${clientPhone}
+                            </a>
+                        </small>
+                    </td>
+                    <td style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end;">
+                        <span class="status-badge ${statusClass}" style="margin-bottom:0.25rem;">
+                            ${statusLabel}
+                        </span>
+                        <button class="action-btn-agendar btn-authorize-booking" 
+                                data-id="${booking.id}" 
+                                data-paid="${isPaid}"
+                                style="font-size:0.7rem; padding: 0.4rem 0.6rem; min-width:auto; height:auto; letter-spacing:1px;">
+                            ${isPaid ? 'CANCELAR PAGO' : 'AUTORIZAR PAGO'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // --- 6. EVENTOS PARA AUTORIZAR PAGOS ---
+            document.querySelectorAll('.btn-authorize-booking').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const bookingId = e.target.getAttribute('data-id');
+                    const isPaid = e.target.getAttribute('data-paid') === 'true';
+                    const newStatus = isPaid ? 'Pendiente' : 'Confirmado 50%';
+
+                    e.target.innerText = 'PROCESANDO...';
+                    e.target.disabled = true;
+                    e.target.style.opacity = '0.5';
+
+                    const { error: updateError } = await supabase
+                        .from('reservas')
+                        .update({ estatus_pago: newStatus })
+                        .eq('id', bookingId);
+
+                    if (updateError) {
+                        alert('Error al actualizar estatus: ' + updateError.message);
+                        e.target.innerText = 'ERROR';
+                        return;
+                    }
+
+                    if (window.sileo) {
+                        sileo.success({ 
+                            title: 'Pago Actualizado', 
+                            description: `Ahora está ${newStatus === 'Confirmado 50%' ? 'CONFIRMADO' : 'PENDIENTE'}` 
+                        });
+                    }
+                    
+                    loadClientBookings(filterDate);
+                });
+            });
+
+            return; // Salir de la función (no ejecutar la parte de cliente)
         }
 
-        clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">${isAdmin ? 'Cargando agenda actual...' : 'Cargando tus reservas...'}</td></tr>`;
+        // --- VISTA CLIENTE ---
+        accountModalTag.innerText = 'MI CUENTA';
+        accountModalTitle.innerText = `HOLA, ${currentUserProfile.nombre.toUpperCase()}`;
+        if (summarySection) summarySection.style.display = 'block';
         
-        // 3. Lógica de Consulta
+        // Re-usamos el antiguo título ya que cliente no tiene admin-agenda-title
+        const oldSectionTitle = document.querySelector('.panel-section-title');
+        if (oldSectionTitle) oldSectionTitle.innerText = 'MIS RESERVAS';
+        
+        const filterContainer = document.getElementById('admin-date-filter-container');
+        if (filterContainer) filterContainer.innerHTML = ''; // Ocultar date picker
+        
+        if (theadTr) {
+            theadTr.innerHTML = '<th>Clase</th><th>Coach</th><th>Estado</th>';
+        }
+        
+        userPhoneSpan.innerText = currentUserProfile.telefono || '-';
+        userInjuriesSpan.innerText = currentUserProfile.historial_lesiones || 'Ninguna';
+
+        clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">Cargando tus reservas...</td></tr>`;
+        
         let query = supabase
             .from('reservas')
             .select(`
@@ -642,32 +836,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     disciplinas (nombre),
                     coaches (nombre)
                 )
-            `);
-
-        if (isAdmin) {
-            query = query
-                .gte('fecha', todayStr)
-                .order('fecha', { ascending: true })
-                .limit(100);
-        } else {
-            query = query
-                .eq('cliente_id', currentUser.id)
-                .order('created_at', { ascending: false });
-        }
+            `)
+            .eq('cliente_id', currentUser.id)
+            .order('created_at', { ascending: false });
         
         const { data: rawBookings, error } = await query;
         let bookings = rawBookings || [];
 
-        // 4. Ordenamiento secundario por hora (en memoria) para Admin
-        if (isAdmin && bookings.length > 0) {
-            bookings.sort((a, b) => {
-                if (a.fecha === b.fecha && a.clases?.hora_inicio && b.clases?.hora_inicio) {
-                    return a.clases.hora_inicio.localeCompare(b.clases.hora_inicio);
-                }
-                return 0;
-            });
-        }
-            
         clientBookingsList.innerHTML = '';
         
         if (error) {
@@ -676,7 +851,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (!bookings || bookings.length === 0) {
-            clientBookingsList.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">${isAdmin ? 'No hay reservas registradas para hoy o próximos días.' : 'No tienes reservas activas.'}</td></tr>`;
+            clientBookingsList.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">No tienes reservas activas.</td></tr>`;
             return;
         }
         
@@ -686,8 +861,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const className = clase.disciplinas?.nombre || 'Clase';
             const coachName = clase.coaches?.nombre || 'Ani';
-            const clientName = booking.clientes?.nombre || 'Usuario';
-            const clientPhone = booking.clientes?.telefono || '';
             const formattedTime = formatTime12h(clase.hora_inicio);
             const dateLabel = booking.fecha ? formatDateSpanish(booking.fecha) : getSpanishDay(clase.dia_semana);
             
@@ -697,54 +870,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const row = document.createElement('tr');
             
-            if (isAdmin) {
-                row.innerHTML = `
-                    <td><strong>${className}</strong><br><small>${dateLabel} - ${formattedTime}</small></td>
-                    <td><strong>${clientName}</strong><br><small><a href="https://wa.me/52${clientPhone}" target="_blank" style="color:var(--color-gold);text-decoration:underline;">${clientPhone}</a></small></td>
-                    <td style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end;">
-                        <span class="status-badge ${statusClass}" style="margin-bottom:0.25rem;">${statusLabel}</span>
-                        <button class="action-btn-agendar btn-authorize-booking" data-id="${booking.id}" data-paid="${isPaid}" style="font-size:0.7rem; padding: 0.4rem 0.6rem; min-width:auto; height:auto; letter-spacing:1px;">
-                            ${isPaid ? 'CANCELAR PAGO' : 'AUTORIZAR PAGO'}
-                        </button>
-                    </td>
-                `;
-            } else {
-                row.innerHTML = `
-                    <td><strong>${className}</strong><br><small>${dateLabel} - ${formattedTime}</small></td>
-                    <td>${coachName}</td>
-                    <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-                `;
-            }
+            row.innerHTML = `
+                <td><strong>${className}</strong><br><small>${dateLabel} - ${formattedTime}</small></td>
+                <td>${coachName}</td>
+                <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+            `;
             clientBookingsList.appendChild(row);
         });
-
-        if (isAdmin) {
-            const authorizeBtns = clientBookingsList.querySelectorAll('.btn-authorize-booking');
-            authorizeBtns.forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const bookingId = e.target.getAttribute('data-id');
-                    const isPaid = e.target.getAttribute('data-paid') === 'true';
-                    const newStatus = isPaid ? 'Pendiente' : 'Confirmado 50%';
-                    
-                    e.target.innerText = 'PROCESANDO...';
-                    e.target.disabled = true;
-                    e.target.style.opacity = '0.5';
-
-                    const { error: updateError } = await supabase
-                        .from('reservas')
-                        .update({ estatus_pago: newStatus })
-                        .eq('id', bookingId);
-                        
-                    if (updateError) {
-                        alert('Error al actualizar estatus: ' + updateError.message);
-                        e.target.innerText = 'ERROR';
-                        return;
-                    }
-                    
-                    loadClientBookings();
-                });
-            });
-        }
     };
 
 

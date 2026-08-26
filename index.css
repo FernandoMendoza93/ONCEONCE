@@ -3110,3 +3110,85 @@ body, html, main, section, .hero-section, .disciplines-section, .philosophy-sect
     background: transparent !important;
 }
 
+/* ============================================================
+   ADMIN DATE PICKER - ESTILO PREMIUM
+   ============================================================ */
+.panel-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.panel-header-row .panel-section-title {
+    margin-bottom: 0.25rem;
+}
+
+.panel-section-subtitle {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.admin-date-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(197, 168, 128, 0.25);
+    color: var(--color-gold);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    outline: none;
+    transition: var(--transition-fast);
+    min-height: 40px;
+    min-width: 130px;
+}
+
+.admin-date-input:hover {
+    border-color: var(--color-gold);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-date-input:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 12px rgba(197, 168, 128, 0.15);
+}
+
+/* Icono del calendario en iOS/Android */
+.admin-date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.7) sepia(1) saturate(0.3) hue-rotate(5deg);
+    opacity: 0.6;
+    padding: 4px;
+}
+
+.admin-date-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Para Firefox */
+.admin-date-input::-moz-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.7) sepia(1) saturate(0.3) hue-rotate(5deg);
+    opacity: 0.6;
+}
+
+/* En móviles, el input ocupa todo el ancho */
+@media (max-width: 480px) {
+    .panel-header-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .admin-date-input {
+        width: 100%;
+        min-width: unset;
+    }
+}
