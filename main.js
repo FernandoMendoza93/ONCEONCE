@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendWhatsAppMessage = (text) => {
         const phone = "529513506047";
         const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-        window.open(url, '_blank');
+        window.location.href = url;
     };
 
     packageButtons.forEach(btn => {
@@ -874,14 +874,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const message = `Hola Once:Once. Me interesa la clase de ${claseInfo} con ${coachName}. Para asegurar mi lugar, ¿podrían proporcionarme la cuenta para transferir el 50% de anticipo? 🤍`;
                     const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
                     
-                    setTimeout(() => {
-                        window.open(waUrl, '_blank');
-                        closeModal(bookingModal);
-                        
-                        btn.innerText = 'AGENDAR';
-                        btn.style.opacity = '1';
-                        btn.disabled = false;
-                    }, 800);
+                    window.location.href = waUrl;
+                    closeModal(bookingModal);
+                    
+                    btn.innerText = 'AGENDAR';
+                    btn.style.opacity = '1';
+                    btn.disabled = false;
                 });
                 
                 listContainer.appendChild(slot);
@@ -1071,15 +1069,13 @@ document.addEventListener('DOMContentLoaded', () => {
         btnCheckoutSubmit.style.opacity = '0.7';
         btnCheckoutSubmit.disabled = true;
         
-        setTimeout(() => {
-            sendWhatsAppMessage(text);
-            closeModal(merchModal);
-            
-            // Restablecer botón
-            btnCheckoutSubmit.innerText = 'COMPLETAR ADQUISICIÓN';
-            btnCheckoutSubmit.style.opacity = '1';
-            btnCheckoutSubmit.disabled = false;
-        }, 800);
+        sendWhatsAppMessage(text);
+        closeModal(merchModal);
+        
+        // Restablecer botón
+        btnCheckoutSubmit.innerText = 'COMPLETAR ADQUISICIÓN';
+        btnCheckoutSubmit.style.opacity = '1';
+        btnCheckoutSubmit.disabled = false;
     });
 
     // 7. GESTOS TÁCTILES CARRUSEL DE MERCH (Swipe / Drag)
