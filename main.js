@@ -1239,4 +1239,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: true });
     }
 
+    // ==========================================================================
+    // 9. OPTIMIZACIÓN HERO CAROUSEL: Gestionar will-change dinámicamente
+    // ==========================================================================
+    const carouselImages = document.querySelectorAll('.carousel-img');
+    if (carouselImages.length > 0) {
+        const checkActiveImages = () => {
+            const cycleTime = 48000;
+            const visibleDuration = 9000;
+            const timeNow = performance.now() % cycleTime;
+            
+            carouselImages.forEach((img, index) => {
+                const delay = index * 6000;
+                let relativeTime = timeNow - delay;
+                if (relativeTime < 0) relativeTime += cycleTime;
+                
+                if (relativeTime <= visibleDuration || relativeTime >= (cycleTime - 1000)) {
+                    img.classList.add('is-animating');
+                } else {
+                    img.classList.remove('is-animating');
+                }
+            });
+        };
+        setInterval(checkActiveImages, 1000);
+        checkActiveImages();
+    }
+
 });

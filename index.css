@@ -441,6 +441,10 @@ html.lenis, html.lenis body {
     object-fit: cover;
     opacity: 0;
     animation: etherealCrossfade 48s infinite;
+}
+
+/* Clase dinámica gestionada por JS para optimizar GPU en Safari */
+.carousel-img.is-animating {
     will-change: transform, opacity;
 }
 
