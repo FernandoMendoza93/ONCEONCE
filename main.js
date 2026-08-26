@@ -567,13 +567,8 @@ document.addEventListener('DOMContentLoaded', () => {
             btnProfile.classList.add('logged-in');
         }
 
-        accountModalTitle.innerText = `HOLA, ${currentUserProfile.nombre.toUpperCase()}`;
-        
         // Renderizar el panel cliente por defecto
         panelClient.classList.remove('hidden');
-        document.getElementById('account-modal-tag').innerText = 'MI CUENTA';
-        userPhoneSpan.innerText = currentUserProfile.telefono || '-';
-        userInjuriesSpan.innerText = currentUserProfile.historial_lesiones || 'Ninguna';
         await loadClientBookings();
 
         // Si es admin, inyectar el link al dashboard operativo de forma condicional y segura en el DOM
@@ -589,14 +584,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadClientBookings = async () => {
         const isAdmin = currentUserProfile && currentUserProfile.rol === 'admin';
-        clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">${isAdmin ? 'Cargando agenda global del estudio...' : 'Cargando tus reservas...'}</td></tr>`;
         
+        // 1. Obtener fecha del servidor (evita problemas de zona horaria)
+        let todayStr;
+        try {
+            const { data: latest, error: dateError } = await supabase
+                .from('reservas')
+                .select('created_at')
+                .order('created_at', { ascending: false })
+                .limit(1);
+            
+            if (latest && latest.length > 0) {
+                todayStr = new Date(latest[0].created_at).toISOString().split('T')[0];
+            } else {
+                todayStr = new Date().toISOString().split('T')[0];
+            }
+        } catch (e) {
+            todayStr = new Date().toISOString().split('T')[0];
+        }
+
+        // 2. Configurar UI según el rol
+        const accountModalTag = document.getElementById('account-modal-tag');
+        const summarySection = document.querySelector('.user-profile-summary');
+        const sectionTitle = document.querySelector('.panel-section-title');
+        const theadTr = document.querySelector('.account-table thead tr');
+
+        if (isAdmin) {
+            accountModalTag.innerText = 'ADMINISTRACIÓN';
+            accountModalTitle.innerText = 'PANEL DE CONTROL';
+            if (summarySection) summarySection.style.display = 'none';
+            if (sectionTitle) sectionTitle.innerText = 'AGENDA ACTUAL (HOY Y PRÓXIMOS DÍAS)';
+            if (theadTr) theadTr.innerHTML = '<th>Clase / Fecha</th><th>Cliente</th><th>Acción</th>';
+        } else {
+            accountModalTag.innerText = 'MI CUENTA';
+            accountModalTitle.innerText = `HOLA, ${currentUserProfile.nombre.toUpperCase()}`;
+            if (summarySection) summarySection.style.display = 'block';
+            if (sectionTitle) sectionTitle.innerText = 'MIS RESERVAS';
+            if (theadTr) theadTr.innerHTML = '<th>Clase</th><th>Coach</th><th>Estado</th>';
+            userPhoneSpan.innerText = currentUserProfile.telefono || '-';
+            userInjuriesSpan.innerText = currentUserProfile.historial_lesiones || 'Ninguna';
+        }
+
+        clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">${isAdmin ? 'Cargando agenda actual...' : 'Cargando tus reservas...'}</td></tr>`;
+        
+        // 3. Lógica de Consulta
         let query = supabase
             .from('reservas')
             .select(`
                 id,
                 estatus_pago,
                 fecha,
+                created_at,
                 clientes (nombre, telefono),
                 clases (
                     dia_semana,
@@ -604,16 +642,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     disciplinas (nombre),
                     coaches (nombre)
                 )
-            `)
-            .order('created_at', { ascending: false });
+            `);
 
-        if (!isAdmin) {
-            query = query.eq('cliente_id', currentUser.id);
+        if (isAdmin) {
+            query = query
+                .gte('fecha', todayStr)
+                .order('fecha', { ascending: true })
+                .limit(100);
         } else {
-            query = query.limit(100);
+            query = query
+                .eq('cliente_id', currentUser.id)
+                .order('created_at', { ascending: false });
         }
         
-        const { data: bookings, error } = await query;
+        const { data: rawBookings, error } = await query;
+        let bookings = rawBookings || [];
+
+        // 4. Ordenamiento secundario por hora (en memoria) para Admin
+        if (isAdmin && bookings.length > 0) {
+            bookings.sort((a, b) => {
+                if (a.fecha === b.fecha && a.clases?.hora_inicio && b.clases?.hora_inicio) {
+                    return a.clases.hora_inicio.localeCompare(b.clases.hora_inicio);
+                }
+                return 0;
+            });
+        }
             
         clientBookingsList.innerHTML = '';
         
@@ -623,7 +676,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (!bookings || bookings.length === 0) {
-            clientBookingsList.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">${isAdmin ? 'No hay reservas registradas en el sistema todavía.' : 'No tienes reservas activas.'}</td></tr>`;
+            clientBookingsList.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">${isAdmin ? 'No hay reservas registradas para hoy o próximos días.' : 'No tienes reservas activas.'}</td></tr>`;
             return;
         }
         
