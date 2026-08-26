@@ -730,9 +730,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formattedTime = formatTime12h(clase.hora_inicio);
                 const dateLabel = booking.fecha ? formatDateSpanish(booking.fecha) : '';
 
-                const isPaid = booking.estatus_pago === 'Confirmado 50%';
-                const statusClass = isPaid ? 'confirmed' : 'pending';
-                const statusLabel = booking.estatus_pago || 'Pendiente';
+                let statusClass = 'pending';
+                let statusLabel = booking.estatus_pago || 'Pendiente';
+                
+                if (statusLabel === 'Confirmado 50%') statusClass = 'confirmed';
+                if (statusLabel === 'Cancelado' || statusLabel === 'Rechazado') {
+                    statusClass = 'rejected';
+                    statusLabel = 'Rechazado';
+                }
+
+                // Generar los botones dinámicamente según el estado
+                let actionButtonsHTML = '';
+                if (statusLabel === 'Rechazado') {
+                    actionButtonsHTML = `
+                        <button class="action-btn-agendar btn-change-status" data-id="${booking.id}" data-status="Pendiente" title="Restaurar a Pendiente" style="font-size:1.1rem; padding: 0.3rem 0.5rem; min-width:auto; height:auto; background:rgba(255,255,255,0.1);">
+                            ↩️
+                        </button>
+                    `;
+                } else if (statusLabel === 'Confirmado 50%') {
+                    actionButtonsHTML = `
+                        <button class="action-btn-agendar btn-change-status" data-id="${booking.id}" data-status="Pendiente" title="Revertir a Pendiente" style="font-size:1.1rem; padding: 0.3rem 0.5rem; min-width:auto; height:auto; background:rgba(255,255,255,0.1);">
+                            ↩️
+                        </button>
+                        <button class="action-btn-agendar btn-change-status" data-id="${booking.id}" data-status="Cancelado" title="Rechazar/Cancelar" style="font-size:1.1rem; padding: 0.3rem 0.5rem; min-width:auto; height:auto; background:rgba(255,50,50,0.2);">
+                            🗑️
+                        </button>
+                    `;
+                } else {
+                    // Pendiente
+                    actionButtonsHTML = `
+                        <button class="action-btn-agendar btn-change-status" data-id="${booking.id}" data-status="Confirmado 50%" title="Confirmar Pago" style="font-size:1.1rem; padding: 0.3rem 0.5rem; min-width:auto; height:auto; background:rgba(50,255,50,0.2);">
+                            ✅
+                        </button>
+                        <button class="action-btn-agendar btn-change-status" data-id="${booking.id}" data-status="Cancelado" title="Rechazar/Cancelar" style="font-size:1.1rem; padding: 0.3rem 0.5rem; min-width:auto; height:auto; background:rgba(255,50,50,0.2);">
+                            🗑️
+                        </button>
+                    `;
+                }
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -754,27 +788,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="status-badge ${statusClass}" style="margin-bottom:0.25rem;">
                             ${statusLabel}
                         </span>
-                        <button class="action-btn-agendar btn-authorize-booking" 
-                                data-id="${booking.id}" 
-                                data-paid="${isPaid}"
-                                style="font-size:0.7rem; padding: 0.4rem 0.6rem; min-width:auto; height:auto; letter-spacing:1px;">
-                            ${isPaid ? 'CANCELAR PAGO' : 'AUTORIZAR PAGO'}
-                        </button>
+                        <div style="display:flex; gap:0.4rem;">
+                            ${actionButtonsHTML}
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
 
-            // --- 6. EVENTOS PARA AUTORIZAR PAGOS ---
-            document.querySelectorAll('.btn-authorize-booking').forEach(btn => {
+            // --- 6. EVENTOS PARA CAMBIAR ESTATUS ---
+            document.querySelectorAll('.btn-change-status').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
-                    const bookingId = e.target.getAttribute('data-id');
-                    const isPaid = e.target.getAttribute('data-paid') === 'true';
-                    const newStatus = isPaid ? 'Pendiente' : 'Confirmado 50%';
+                    const btnEl = e.currentTarget;
+                    const bookingId = btnEl.getAttribute('data-id');
+                    const newStatus = btnEl.getAttribute('data-status');
 
-                    e.target.innerText = 'PROCESANDO...';
-                    e.target.disabled = true;
-                    e.target.style.opacity = '0.5';
+                    btnEl.style.opacity = '0.5';
+                    btnEl.disabled = true;
 
                     const { error: updateError } = await supabase
                         .from('reservas')
@@ -783,14 +813,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (updateError) {
                         alert('Error al actualizar estatus: ' + updateError.message);
-                        e.target.innerText = 'ERROR';
+                        btnEl.style.opacity = '1';
+                        btnEl.disabled = false;
                         return;
                     }
 
                     if (window.sileo) {
                         sileo.success({ 
-                            title: 'Pago Actualizado', 
-                            description: `Ahora está ${newStatus === 'Confirmado 50%' ? 'CONFIRMADO' : 'PENDIENTE'}` 
+                            title: 'Estatus Actualizado', 
+                            description: `La reserva ahora está en ${newStatus}` 
                         });
                     }
                     
@@ -1077,6 +1108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     .from('reservas')
                     .select('clase_id')
                     .eq('fecha', bookingDate)
+                    .neq('estatus_pago', 'Cancelado')
                     .then(({ data: reservations, error }) => {
                         if (!error && reservations) {
                             const counts = {};
