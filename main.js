@@ -845,13 +845,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filterContainer) filterContainer.innerHTML = ''; // Ocultar date picker
         
         if (theadTr) {
-            theadTr.innerHTML = '<th>Clase</th><th>Coach</th><th>Estado</th>';
+            theadTr.innerHTML = '<th>Clase</th><th>Estado</th>';
         }
         
         userPhoneSpan.innerText = currentUserProfile.telefono || '-';
         userInjuriesSpan.innerText = currentUserProfile.historial_lesiones || 'Ninguna';
 
-        clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">Cargando tus reservas...</td></tr>`;
+        clientBookingsList.innerHTML = `<tr><td colspan="2" class="table-loading">Cargando tus reservas...</td></tr>`;
         
         let query = supabase
             .from('reservas')
@@ -877,12 +877,12 @@ document.addEventListener('DOMContentLoaded', () => {
         clientBookingsList.innerHTML = '';
         
         if (error) {
-            clientBookingsList.innerHTML = `<tr><td colspan="3" class="table-loading">Error al cargar reservas.</td></tr>`;
+            clientBookingsList.innerHTML = `<tr><td colspan="2" class="table-loading">Error al cargar reservas.</td></tr>`;
             return;
         }
         
         if (!bookings || bookings.length === 0) {
-            clientBookingsList.innerHTML = `<tr><td colspan="3" class="no-bookings-msg">No tienes reservas activas.</td></tr>`;
+            clientBookingsList.innerHTML = `<tr><td colspan="2" class="no-bookings-msg">No tienes reservas activas.</td></tr>`;
             return;
         }
         
@@ -903,7 +903,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             row.innerHTML = `
                 <td><strong>${className}</strong><br><small>${dateLabel} - ${formattedTime}</small></td>
-                <td>${coachName}</td>
                 <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
             `;
             clientBookingsList.appendChild(row);
@@ -1087,7 +1086,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     const WA_NUMBER = '529516410766';
-                    const message = `Hola Once:Once. Me interesa la clase de ${claseInfo} con ${coachName}. Para asegurar mi lugar, ¿podrían proporcionarme la cuenta para transferir el 50% de anticipo? 🤍`;
+                    const message = `Hola Once:Once. Me interesa la clase de ${claseInfo}. Para asegurar mi lugar, ¿podrían proporcionarme la cuenta para transferir el 50% de anticipo? 🤍`;
                     const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
                     
                     window.location.href = waUrl;
