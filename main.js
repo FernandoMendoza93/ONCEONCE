@@ -585,20 +585,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadClientBookings = async (selectedDate = null) => {
         const isAdmin = currentUserProfile && currentUserProfile.rol === 'admin';
         
-        // --- 1. Obtener fecha del servidor ---
+        // --- 1. Obtener fecha actual (Timezone: Oaxaca, México) ---
         let todayStr;
         try {
-            const { data: latest, error: dateError } = await supabase
-                .from('reservas')
-                .select('created_at')
-                .order('created_at', { ascending: false })
-                .limit(1);
-            
-            if (latest && latest.length > 0) {
-                todayStr = new Date(latest[0].created_at).toISOString().split('T')[0];
-            } else {
-                todayStr = new Date().toISOString().split('T')[0];
-            }
+            const dateParts = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'America/Mexico_City',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).formatToParts(new Date());
+            const year = dateParts.find(p => p.type === 'year').value;
+            const month = dateParts.find(p => p.type === 'month').value;
+            const day = dateParts.find(p => p.type === 'day').value;
+            todayStr = `${year}-${month}-${day}`;
         } catch (e) {
             todayStr = new Date().toISOString().split('T')[0];
         }
